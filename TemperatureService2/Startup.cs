@@ -55,7 +55,6 @@ namespace TemperatureService2
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
