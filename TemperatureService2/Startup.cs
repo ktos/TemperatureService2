@@ -8,9 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
-using TempHistory.Repository;
+using TemperatureService2.Repository;
 
-namespace TempHistory
+namespace TemperatureService2
 {
     public class Startup
     {
