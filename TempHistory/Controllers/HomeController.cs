@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using TempHistory.Models;
+using TempHistory.Repository;
 
 namespace TempHistory.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly TempdataDbContext _context;
+        private readonly ITempdataRepository _repository;
 
-        public HomeController(TempdataDbContext context)
+        public HomeController(ITempdataRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public IActionResult Index()
         {
-            return View(_context.Tempdata.Where(x => x.Sensor == "outdoor").OrderByDescending(x => x.Timestamp).Take(100).ToList());            
-        }        
+            return View(_repository.GetLast100OutdoorData());
+        }
 
         public IActionResult Error()
         {

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
+using TempHistory.Repository;
 
 namespace TempHistory
 {
@@ -25,6 +26,8 @@ namespace TempHistory
         {
             services.AddDbContext<TempdataDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<ITempdataRepository, TempdataRepository>();
 
             services.AddMvc();
         }
