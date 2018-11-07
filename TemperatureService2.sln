@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemperatureService2.Test", "TemperatureService2.Test\TemperatureService2.Test.csproj", "{B5937CA1-D145-405F-AA53-48793BB8DD88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemperatureService2.Test", "TemperatureService2.Test\TemperatureService2.Test.csproj", "{B5937CA1-D145-405F-AA53-48793BB8DD88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TempHistory", "TempHistory\TempHistory.csproj", "{C5814EA2-57EF-4A67-979A-6E7B6A892AD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemperatureService2", "TemperatureService2\TemperatureService2.csproj", "{C5814EA2-57EF-4A67-979A-6E7B6A892AD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B5937CA1-D145-405F-AA53-48793BB8DD88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -44,5 +41,11 @@ Global
 		{C5814EA2-57EF-4A67-979A-6E7B6A892AD3}.Release|x64.Build.0 = Release|Any CPU
 		{C5814EA2-57EF-4A67-979A-6E7B6A892AD3}.Release|x86.ActiveCfg = Release|Any CPU
 		{C5814EA2-57EF-4A67-979A-6E7B6A892AD3}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A482373-34EB-406F-B3F5-8E13238F5938}
 	EndGlobalSection
 EndGlobal

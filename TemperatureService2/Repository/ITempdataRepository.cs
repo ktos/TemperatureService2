@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TempHistory.Models;
+using TemperatureService2.Models;
 
-namespace TempHistory.Repository
+namespace TemperatureService2.Repository
 {
     public interface ITempdataRepository
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace TempHistory.Models
+namespace TemperatureService2.Models
 {
     public class ErrorViewModel
     {

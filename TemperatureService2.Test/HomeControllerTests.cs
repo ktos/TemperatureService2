@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TempHistory.Controllers;
-using TempHistory.Models;
-using TempHistory.Repository;
+using TemperatureService2.Controllers;
+using TemperatureService2.Models;
+using TemperatureService2.Repository;
 using Xunit;
 
 namespace TemperatureService2.Test

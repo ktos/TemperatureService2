@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TempHistory.Models
+namespace TemperatureService2.Models
 {
     public partial class Tempdata
     {

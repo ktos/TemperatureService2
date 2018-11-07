@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TempHistory.Models;
-using TempHistory.Repository;
+using TemperatureService2.Models;
+using TemperatureService2.Repository;
 
-namespace TempHistory.Controllers
+namespace TemperatureService2.Controllers
 {
     public class HomeController : Controller
     {

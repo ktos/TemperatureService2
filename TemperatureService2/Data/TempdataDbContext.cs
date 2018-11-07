@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using TempHistory.Models;
+using TemperatureService2.Models;
 
-namespace TempHistory
+namespace TemperatureService2
 {
     public partial class TempdataDbContext : DbContext
     {
