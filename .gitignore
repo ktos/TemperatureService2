@@ -234,3 +234,5 @@ _Pvt_Extensions
 *.txt
 /*/wwwroot/lib/
 *.min.*
+
+/*/.vscode
