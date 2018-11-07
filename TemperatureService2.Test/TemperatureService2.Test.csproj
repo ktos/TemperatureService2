@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TempHistory\TempHistory.csproj" />
+    <ProjectReference Include="..\TemperatureService2\TemperatureService2.csproj" />
   </ItemGroup>
 
 </Project>
