@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace TemperatureService2.Test
 {
-    public class HomeController_Basic
-    : IClassFixture<WebApplicationFactory<TemperatureService2.Startup>>
+    public class HomeController_Basic : IClassFixture<WebApplicationFactory<Startup>>
     {
-        private readonly WebApplicationFactory<TemperatureService2.Startup> _factory;
+        private readonly WebApplicationFactory<Startup> _factory;
 
-        public HomeController_Basic(WebApplicationFactory<TemperatureService2.Startup> factory)
+        public HomeController_Basic(WebApplicationFactory<Startup> factory)
         {
             _factory = factory;
         }
@@ -26,7 +22,7 @@ namespace TemperatureService2.Test
             var client = _factory.CreateClient();
 
             // Act
-            var response = await client.GetAsync(url);
+            var response = await client.GetAsync(url).ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
