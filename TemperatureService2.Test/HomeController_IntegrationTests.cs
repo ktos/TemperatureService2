@@ -19,7 +19,7 @@ namespace TemperatureService2.Test
 
         [Theory]
         [InlineData("/")]
-        [InlineData("/Index")]
+        [InlineData("/Home/Index")]
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
             // Arrange
