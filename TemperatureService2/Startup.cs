@@ -11,6 +11,7 @@ using Pomelo.EntityFrameworkCore.MySql;
 using TemperatureService2.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TemperatureService2.Data;
 
 namespace TemperatureService2
 {
@@ -34,6 +35,9 @@ namespace TemperatureService2
             });
 
             services.AddDbContext<TempdataDbContext>(options =>
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<SensorsDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ITempdataRepository, TempdataRepository>();

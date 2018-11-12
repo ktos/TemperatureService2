@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +11,12 @@ namespace TemperatureService2.Models
     /// </summary>
     public class SensorValue
     {
+        /// <summary>
+        /// Internal value id for EF Core
+        /// </summary>
+        [Key]
+        public int Id { get; set; }
+
         /// <summary>
         /// Sensor which sent the value
         /// </summary>
