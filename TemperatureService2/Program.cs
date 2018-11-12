@@ -14,7 +14,7 @@ namespace TemperatureService2
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args).Build().MigrateToV3().Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

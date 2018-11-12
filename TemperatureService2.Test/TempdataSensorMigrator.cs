@@ -11,7 +11,7 @@ namespace TemperatureService2.Test
     public class TempdataSensorMigrator
     {
         [Fact]
-        public async void Migrate_TempdataAsync()
+        public void Migrate_SensorValues()
         {
             var options = new DbContextOptionsBuilder<TempdataDbContext>().UseInMemoryDatabase("InMemoryDB");
             var options2 = new DbContextOptionsBuilder<SensorsDbContext>().UseInMemoryDatabase("InMemoryDB");
@@ -54,21 +54,21 @@ namespace TemperatureService2.Test
                     Value = 14.0f
                 });
 
-                await td.SaveChangesAsync();
+                td.SaveChanges();
             }
 
             using (var sd = new SensorsDbContext(options2.Options))
             {
                 sd.Sensors.Add(new Sensor { Name = "outdoor" });
                 sd.Sensors.Add(new Sensor { Name = "indoor" });
-                await sd.SaveChangesAsync();
+                sd.SaveChanges();
             }
 
             using (var td = new TempdataDbContext(options.Options))
             using (var sd = new SensorsDbContext(options2.Options))
             {
                 var t = new TempdataSensorsMigrator(sd, td);
-                t.Migrate();
+                t.MigrateValues();
 
                 var outdoor = sd.Sensors.Include(x => x.Values).First(x => x.Name == "outdoor");
                 var indoor = sd.Sensors.Include(x => x.Values).First(x => x.Name == "indoor");
@@ -92,6 +92,67 @@ namespace TemperatureService2.Test
                 Assert.Equal(new DateTime(2018, 12, 1, 14, 00, 00).ToUniversalTime(), lastOutdoor.Timestamp);
 
                 Assert.Equal(new DateTime(2018, 12, 1, 14, 12, 00).ToUniversalTime(), firstIndoor.Timestamp);
+            }
+        }
+
+        [Fact]
+        public void Migrate_Sensors()
+        {
+            var options = new DbContextOptionsBuilder<TempdataDbContext>().UseInMemoryDatabase("InMemoryDB2");
+            var options2 = new DbContextOptionsBuilder<SensorsDbContext>().UseInMemoryDatabase("InMemoryDB2");
+
+            // arrange
+            using (var td = new TempdataDbContext(options.Options))
+            {
+                td.Tempdata.Add(new Models.Tempdata
+                {
+                    Sensor = "outdoor",
+                    Timestamp = (int)new DateTimeOffset(new DateTime(2018, 10, 30, 10, 00, 00)).ToUnixTimeSeconds(),
+                    Value = 10.0f
+                });
+
+                td.Tempdata.Add(new Models.Tempdata
+                {
+                    Sensor = "indoor",
+                    Timestamp = (int)new DateTimeOffset(new DateTime(2018, 12, 1, 14, 12, 00)).ToUnixTimeSeconds(),
+                    Value = 1.0f
+                });
+
+                td.Tempdata.Add(new Models.Tempdata
+                {
+                    Sensor = "outdoor",
+                    Timestamp = (int)new DateTimeOffset(new DateTime(2018, 10, 30, 12, 00, 00)).ToUnixTimeSeconds(),
+                    Value = 12.0f
+                });
+
+                td.Tempdata.Add(new Models.Tempdata
+                {
+                    Sensor = "indoor",
+                    Timestamp = (int)new DateTimeOffset(new DateTime(2018, 12, 12, 14, 12, 00)).ToUnixTimeSeconds(),
+                    Value = 2.0f
+                });
+
+                td.Tempdata.Add(new Models.Tempdata
+                {
+                    Sensor = "outdoor",
+                    Timestamp = (int)new DateTimeOffset(new DateTime(2018, 12, 1, 14, 00, 00)).ToUnixTimeSeconds(),
+                    Value = 14.0f
+                });
+
+                td.SaveChanges();
+            }
+
+            using (var td = new TempdataDbContext(options.Options))
+            using (var sd = new SensorsDbContext(options2.Options))
+            {
+                var t = new TempdataSensorsMigrator(sd, td);
+                t.MigrateSensors();
+
+                var outdoor = sd.Sensors.First(x => x.Name == "outdoor");
+                var indoor = sd.Sensors.First(x => x.Name == "indoor");
+
+                Assert.IsType<Sensor>(outdoor);
+                Assert.IsType<Sensor>(indoor);
             }
         }
     }
