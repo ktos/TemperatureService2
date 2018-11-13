@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TemperatureService2.Data;
 using TemperatureService2.Test.Helpers;
 
 namespace TemperatureService2.Test
@@ -24,7 +25,7 @@ namespace TemperatureService2.Test
 
                 // Add a database context (ApplicationDbContext) using an in-memory 
                 // database for testing.
-                services.AddDbContext<TempdataDbContext>(options =>
+                services.AddDbContext<SensorsDbContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                     options.UseInternalServiceProvider(serviceProvider);
@@ -38,7 +39,7 @@ namespace TemperatureService2.Test
                 using (var scope = sp.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
-                    var db = scopedServices.GetRequiredService<TempdataDbContext>();
+                    var db = scopedServices.GetRequiredService<SensorsDbContext>();
                     var logger = scopedServices
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
