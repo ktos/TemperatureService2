@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -29,6 +30,20 @@ namespace TemperatureService2.Test
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             Assert.Equal("text/html; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
+        [InlineData("/test.html")]
+        public async Task Get_EndpointsReturn404(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }
