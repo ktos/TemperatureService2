@@ -66,6 +66,11 @@ namespace TemperatureService2
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "sensor",
+                    template: "{name}.html",
+                    defaults: new { controller = "Home", action = "Sensor" });
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
