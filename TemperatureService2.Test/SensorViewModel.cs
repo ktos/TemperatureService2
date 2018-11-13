@@ -12,7 +12,8 @@ namespace TemperatureService2.Test
         [Fact]
         public void SensorViewModel_StatusFalseWhenEmptyValues()
         {
-            var sensor = new Sensor {
+            var sensor = new Sensor
+            {
                 Name = "outdoor",
                 Description = "zewnątrz",
                 InternalId = "1",
@@ -33,9 +34,7 @@ namespace TemperatureService2.Test
                 Description = "zewnątrz",
                 InternalId = "1",
                 Type = SensorType.Temperature,
-                Values = new List<SensorValue> {
-                    
-                }
+                Values = new List<SensorValue>()
             };
 
             var svm = new ViewModels.SensorViewModel(sensor);

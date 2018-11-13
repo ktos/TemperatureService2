@@ -7,7 +7,7 @@ using TemperatureService2.ViewModels;
 namespace TemperatureService2.Controllers
 {
     public class HomeController : Controller
-    {        
+    {
         private readonly ISensorRepository _repository;
 
         public HomeController(ISensorRepository repository)

@@ -58,7 +58,7 @@ namespace TemperatureService2.ViewModels
                 Data = newestValue.Data;
                 LastUpdated = newestValue.Timestamp;
 
-                Status = (DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60)) ? true : false;
+                Status = DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60);
             }
             else
             {

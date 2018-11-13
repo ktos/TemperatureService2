@@ -13,11 +13,9 @@ namespace TemperatureService2.Test
 {
     public class HomeControllerTests
     {
-        private Mock<ISensorRepository> sensorsRepoMock;
+        private readonly Mock<ISensorRepository> sensorsRepoMock;
 
-
-
-        private HomeController controller;
+        private readonly HomeController controller;
 
         public HomeControllerTests()
         {

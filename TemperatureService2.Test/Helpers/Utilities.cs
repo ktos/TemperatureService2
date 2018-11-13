@@ -30,8 +30,9 @@ namespace TemperatureService2.Test.Helpers
         {
             var list = new List<SensorValue>();
             var r = new Random();
-
-            int id = 1;
+#pragma warning disable RCS1118 // Mark local variable as const.
+            var id = 1;
+#pragma warning restore RCS1118 // Mark local variable as const.
 
             foreach (var s in sensors)
             {
