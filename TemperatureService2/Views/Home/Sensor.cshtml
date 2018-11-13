@@ -1,0 +1,56 @@
+﻿@model TemperatureService2.ViewModels.SensorViewModel
+
+@{
+    ViewData["Title"] = "Sensor";
+}
+
+<h2>Sensor</h2>
+
+<div>
+    <h4>SensorViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Data)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Data)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastUpdated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastUpdated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+    </dl>
+</div>

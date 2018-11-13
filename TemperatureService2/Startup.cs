@@ -41,6 +41,7 @@ namespace TemperatureService2
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ITempdataRepository, TempdataRepository>();
+            services.AddScoped<ISensorRepository, SensorRepository>();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

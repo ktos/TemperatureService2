@@ -4,11 +4,11 @@ using Xunit;
 
 namespace TemperatureService2.Test
 {
-    public class HomeController_Basic : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class HomeController_Integration : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly CustomWebApplicationFactory<Startup> _factory;
 
-        public HomeController_Basic(CustomWebApplicationFactory<Startup> factory)
+        public HomeController_Integration(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
         }
