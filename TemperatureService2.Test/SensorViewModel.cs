@@ -96,7 +96,8 @@ namespace TemperatureService2.Test
             Assert.Equal("zewnątrz", svm.Description);
             Assert.Equal("1", svm.Id);
             Assert.Equal(SensorType.Temperature, svm.Type);
-            Assert.Equal(float.NaN, svm.Data);            
+            Assert.Equal(1, svm.Data);
+            Assert.Equal(now - TimeSpan.FromMinutes(60), svm.LastUpdated);
         }
     }
 }

@@ -53,11 +53,12 @@ namespace TemperatureService2.ViewModels
             Type = sensor.Type;
 
             var newestValue = sensor.Values?.OrderByDescending(x => x.Timestamp).FirstOrDefault();
-            if (newestValue != null && DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60))
+            if (newestValue != null)
             {
                 Data = newestValue.Data;
                 LastUpdated = newestValue.Timestamp;
-                Status = true;
+
+                Status = (DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60)) ? true : false;
             }
             else
             {
