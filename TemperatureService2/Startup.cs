@@ -30,7 +30,7 @@ namespace TemperatureService2
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = _ => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -41,6 +41,7 @@ namespace TemperatureService2
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ITempdataRepository, TempdataRepository>();
+            services.AddScoped<ISensorRepository, SensorRepository>();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -64,6 +65,11 @@ namespace TemperatureService2
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                    name: "sensor",
+                    template: "{name}.html",
+                    defaults: new { controller = "Home", action = "Sensor" });
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
