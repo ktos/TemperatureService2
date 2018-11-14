@@ -235,4 +235,6 @@ _Pvt_Extensions
 /*/wwwroot/lib/
 *.min.*
 
-/*/.vscode
+/**/.vscode
+/**/coverage.*
+lcov.info
