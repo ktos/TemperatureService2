@@ -12,6 +12,8 @@ using TemperatureService2.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TemperatureService2.Data;
+using TemperatureService2.Services;
+using Microsoft.Net.Http.Headers;
 
 namespace TemperatureService2
 {
@@ -31,7 +33,7 @@ namespace TemperatureService2
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = _ => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
             });
 
             services.AddDbContext<TempdataDbContext>(options =>
@@ -43,7 +45,10 @@ namespace TemperatureService2
             services.AddScoped<ITempdataRepository, TempdataRepository>();
             services.AddScoped<ISensorRepository, SensorRepository>();
 
-            services.AddMvc()
+            services.AddMvc(options => {
+                options.FormatterMappings.SetMediaTypeMappingForFormat("wns", MediaTypeHeaderValue.Parse("application/xml"));
+                options.OutputFormatters.Add(new WnsOutputFormatter());
+            })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -67,7 +72,7 @@ namespace TemperatureService2
             {
                 routes.MapRoute(
                     name: "sensor",
-                    template: "{name}.html",
+                    template: "{name}.{format}",
                     defaults: new { controller = "Home", action = "Sensor" });
 
                 routes.MapRoute(
