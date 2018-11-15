@@ -238,3 +238,4 @@ _Pvt_Extensions
 /**/.vscode
 /**/coverage.*
 lcov.info
+/report
