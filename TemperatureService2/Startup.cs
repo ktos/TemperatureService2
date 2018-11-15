@@ -36,16 +36,13 @@ namespace TemperatureService2
                 options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
             });
 
-            services.AddDbContext<TempdataDbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddDbContext<SensorsDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<ITempdataRepository, TempdataRepository>();
             services.AddScoped<ISensorRepository, SensorRepository>();
 
-            services.AddMvc(options => {
+            services.AddMvc(options =>
+            {
                 options.FormatterMappings.SetMediaTypeMappingForFormat("wns", MediaTypeHeaderValue.Parse("application/xml"));
                 options.OutputFormatters.Add(new WnsOutputFormatter());
             })
