@@ -30,16 +30,15 @@ namespace TemperatureService2.Test.Helpers
         {
             var list = new List<SensorValue>();
             var r = new Random();
-#pragma warning disable RCS1118 // Mark local variable as const.
+
             var id = 1;
-#pragma warning restore RCS1118 // Mark local variable as const.
 
             foreach (var s in sensors)
             {
                 for (int i = 0; i < r.Next(10); i++)
                 {
                     list.Add(new SensorValue { Data = r.Next(100), Id = id, Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 10) });
-                    i++;
+                    id++;
                 }
             }
 

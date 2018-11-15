@@ -30,6 +30,17 @@ namespace TemperatureService2.Controllers
                 return NotFound();
         }
 
+        [FormatFilter]
+        public IActionResult SensorInAnotherFormat(string name)
+        {
+            var sensor = _repository.GetSensor(name);
+
+            if (sensor != null)
+                return Ok(new SensorViewModel(sensor));
+            else
+                return NotFound();
+        }
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
