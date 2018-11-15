@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using TemperatureService2.Data;
 using TemperatureService2.Services;
 using Microsoft.Net.Http.Headers;
+using TemperatureService2.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TemperatureService2
 {
@@ -47,6 +49,14 @@ namespace TemperatureService2
                 options.OutputFormatters.Add(new WnsOutputFormatter());
             })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiKey", policy =>
+                    policy.Requirements.Add(new ApiKeyRequirement(Configuration["ApiKey"])));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, ApiKeyHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
