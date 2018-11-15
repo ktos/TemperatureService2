@@ -20,13 +20,22 @@ namespace TemperatureService2.Controllers
             return View(_repository.GetAllSensors());
         }
         
-        [FormatFilter]
         public IActionResult Sensor(string name)
         {
             var sensor = _repository.GetSensor(name);
 
             if (sensor != null)
-                //return View();
+                return View(new SensorViewModel(sensor));
+            else
+                return NotFound();
+        }
+
+        [FormatFilter]
+        public IActionResult SensorInAnotherFormat(string name)
+        {
+            var sensor = _repository.GetSensor(name);
+
+            if (sensor != null)                
                 return Ok(new SensorViewModel(sensor));
             else
                 return NotFound();

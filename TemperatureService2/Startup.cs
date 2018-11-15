@@ -72,8 +72,13 @@ namespace TemperatureService2
             {
                 routes.MapRoute(
                     name: "sensor",
-                    template: "{name}.{format}",
+                    template: "{name}.html",
                     defaults: new { controller = "Home", action = "Sensor" });
+
+                routes.MapRoute(
+                    name: "sensorinanotherformat",
+                    template: "{name}.{format}",
+                    defaults: new { controller = "Home", action = "SensorInAnotherFormat" });
 
                 routes.MapRoute(
                     name: "default",
