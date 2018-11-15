@@ -33,8 +33,10 @@ namespace TemperatureService2.Test
         }
 
         [Theory]
-        [InlineData("/test.html")]
-        public async Task Get_EndpointsReturn404(string url)
+        [InlineData("/nonexisting.html")]
+        [InlineData("/nonexisting.json")]
+        [InlineData("/nonexisting.wns")]
+        public async Task Get_SensorsReturn404WhenNonExisting(string url)
         {
             // Arrange
             var client = _factory.CreateClient();
@@ -45,5 +47,22 @@ namespace TemperatureService2.Test
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
+
+        [Theory]
+        [InlineData("/outdoor.json")]
+        [InlineData("/indoor.json")]
+        public async Task Get_SensorReturn200AndCorrectContentType(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }        
     }
 }
