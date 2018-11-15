@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Xml;
 using Xunit;
 
 namespace TemperatureService2.Test
@@ -63,6 +66,34 @@ namespace TemperatureService2.Test
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-        }        
+        }
+
+        [Theory]
+        [InlineData("/outdoor.wns")]
+        [InlineData("/indoor.wns")]
+        public async Task Get_SensorReturn200AndCorrectContentTypeAndCorrectWNSExpires(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            XmlDocument xd = new XmlDocument();
+            xd.LoadXml(await response.Content.ReadAsStringAsync());
+
+            var text = xd.SelectNodes("/tile/visual/binding[@template=\"TileWide\"]/text[@hint-style=\"captionSubtle\"]").Item(0).InnerText;
+            text = text.Replace("last update: ", "");
+
+            var lastUpdated = DateTime.Parse(text);
+            var wnsExpires = DateTime.Parse(response.Headers.GetValues("X-WNS-Expires").First()).ToUniversalTime();
+
+            Assert.Equal(lastUpdated.AddMinutes(60), wnsExpires);
+            Assert.Equal("application/xml; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
     }
 }
