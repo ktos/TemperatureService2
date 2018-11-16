@@ -38,43 +38,40 @@ namespace TemperatureService2.Repository
             if (sensorDto.Description != sensor.Description) sensor.Description = sensorDto.Description;
             if (sensorDto.Id != sensor.InternalId) sensor.InternalId = sensorDto.Id;
             if (sensorDto.Type != sensor.Type) sensor.Type = sensorDto.Type;
-            if (sensorDto.Data != -127)
+            if (sensorDto.Data != -127 && !AddSensorReading(sensorDto))
             {
-                AddSensorReading(sensorDto);
+                return false;
             }
 
             _context.SaveChanges();
             return true;
         }
 
-        public bool AddSensor(SensorDto dto)
+        public bool AddSensor(SensorDto sensorDto)
         {
             var sensor = new Sensor
             {
-                Description = dto.Description,
-                InternalId = dto.Id,
-                Name = dto.Name,
-                Type = dto.Type
+                Description = sensorDto.Description,
+                InternalId = sensorDto.Id,
+                Name = sensorDto.Name,
+                Type = sensorDto.Type
             };
 
             var created = _context.Sensors.Add(sensor);
-            if (dto.Data != float.NaN)
+            if (sensorDto.Data != -127 && !AddSensorReading(sensorDto))
             {
-                if (!AddSensorReading(dto))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
         }
 
-        public bool AddSensorReading(SensorDto dto)
+        public bool AddSensorReading(SensorDto sensorDto)
         {
             _context.SensorValues.Add(new SensorValue
             {
-                Data = dto.Data,
-                Sensor = GetSensor(dto.Name),
+                Data = sensorDto.Data,
+                Sensor = GetSensor(sensorDto.Name),
                 Timestamp = DateTime.UtcNow
             });
 

@@ -13,8 +13,8 @@ namespace TemperatureService2.Repository
 
         bool UpdateSensor(SensorDto sensorDto);
 
-        bool AddSensorReading(SensorDto dto);
+        bool AddSensorReading(SensorDto sensorDto);
 
-        bool AddSensor(SensorDto dto);
+        bool AddSensor(SensorDto sensorDto);
     }
 }
