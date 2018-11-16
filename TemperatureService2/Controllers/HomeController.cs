@@ -41,9 +41,6 @@ namespace TemperatureService2.Controllers
 
             var sensor = _repository.GetSensor(name);
 
-            if (model == null)
-                return BadRequest();
-
             if (model.Name == null)
                 model.Name = name;
 

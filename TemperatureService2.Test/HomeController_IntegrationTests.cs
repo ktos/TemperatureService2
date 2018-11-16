@@ -229,6 +229,100 @@ namespace TemperatureService2.Test
         }
 
         [Theory]
+        [InlineData("newsensor")]
+        public async Task Put_CreateNewSensorWithData(string sensor)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var url = $"/{sensor}";
+
+            string randomId = Utilities.RandomString(5);
+            string randomDescription = Utilities.RandomString(20);
+            float randomData = Utilities.RandomFloat();
+
+            var dto = new SensorDto { Id = randomId, Description = randomDescription, Data = randomData };
+            var content = JsonConvert.SerializeObject(dto);
+
+            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
+
+            // Act
+            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+
+            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomDescription, svm.Description);
+            Assert.Equal(randomData, svm.Data);
+
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
+        [InlineData("newsensor")]
+        public async Task Put_CreateNewSensorWithoutData(string sensor)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var url = $"/{sensor}";
+
+            string randomId = Utilities.RandomString(5);
+            string randomDescription = Utilities.RandomString(20);
+
+            var dto = new SensorDto { Id = randomId, Description = randomDescription };
+            var content = JsonConvert.SerializeObject(dto);
+
+            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
+
+            // Act
+            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+
+            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomDescription, svm.Description);
+
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
+        [InlineData("outdoor")]
+        public async Task Put_UpdateSensorWithData127(string sensor)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var url = $"/{sensor}";
+
+            var dto = new SensorDto { Data = -127 };
+            var content = JsonConvert.SerializeObject(dto);
+
+            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
+
+            // Act
+            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Theory]
         [InlineData("outdoor")]
         [InlineData("indoor")]
         public async Task Put_SensorInformationWrongApiKeyInBody(string sensor)

@@ -57,6 +57,8 @@ namespace TemperatureService2.Repository
             };
 
             var created = _context.Sensors.Add(sensor);
+            _context.SaveChanges();
+
             if (sensorDto.Data != -127 && !AddSensorReading(sensorDto))
             {
                 return false;
