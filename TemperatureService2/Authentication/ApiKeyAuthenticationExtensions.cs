@@ -3,12 +3,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using TemperatureService2.Models;
@@ -65,7 +62,7 @@ namespace TemperatureService2.Authentication
                 {
                     if (sensorData.ApiKey == Options.ApiKey)
                     {
-                        Context.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(ApiKeyAuthenticationDefaults.AuthenticationScheme));
+                        Context.User.AddIdentity(new ClaimsIdentity(ApiKeyAuthenticationDefaults.AuthenticationScheme));
                         return AuthenticateResult.Success(at);
                     }
                     else
@@ -74,16 +71,13 @@ namespace TemperatureService2.Authentication
             }
             else if (apikey == Options.ApiKey)
             {
-                Context.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(ApiKeyAuthenticationDefaults.AuthenticationScheme));
+                Context.User.AddIdentity(new ClaimsIdentity(ApiKeyAuthenticationDefaults.AuthenticationScheme));
                 return AuthenticateResult.Success(at);
             }
             else
             {
                 return AuthenticateResult.NoResult();
             }
-
-            // build the claims and put them in "Context"; you need to import the Microsoft.AspNetCore.Authentication package
-            return AuthenticateResult.NoResult();
         }
     }
 }

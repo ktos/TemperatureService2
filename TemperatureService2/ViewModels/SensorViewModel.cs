@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TemperatureService2.Models;
 
 namespace TemperatureService2.ViewModels
@@ -11,7 +9,7 @@ namespace TemperatureService2.ViewModels
         /// <summary>
         /// Publicly-visible sensor name, which will be used to
         /// refer to id
-        /// </summary>        
+        /// </summary>
         public string Name { get; set; }
 
         /// <summary>

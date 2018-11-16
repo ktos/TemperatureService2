@@ -11,9 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TemperatureService2.ViewModels;
@@ -52,7 +50,7 @@ namespace TemperatureService2.Services
         }
     }
 
-    public class RazorWnsViewOutput
+    public static class RazorWnsViewOutput
     {
         public static async Task<string> WnsOutput(OutputFormatterWriteContext context)
         {

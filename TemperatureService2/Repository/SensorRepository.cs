@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TemperatureService2.Data;
 using TemperatureService2.Models;
 
