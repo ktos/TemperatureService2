@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TemperatureService2.Models;
 using TemperatureService2.Repository;
@@ -28,6 +29,37 @@ namespace TemperatureService2.Controllers
                 return View(new SensorViewModel(sensor));
             else
                 return NotFound();
+        }
+
+        [Authorize]
+        [FormatFilter]
+        [HttpPost("/{name}"), HttpPut("/{name}")]
+        public IActionResult UpdateSensor([FromRoute]string name, [FromBody]SensorDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var sensor = _repository.GetSensor(name);
+
+            if (model == null)
+                return BadRequest();
+
+            if (model.Name == null)
+                model.Name = name;
+
+            if (sensor != null)
+            {
+                if (!_repository.UpdateSensor(model))
+                    return BadRequest();
+            }
+            else if (!_repository.AddSensor(model))
+            {
+                return BadRequest();
+            }
+
+            var svm = new SensorViewModel(_repository.GetSensor(name));
+
+            return CreatedAtAction("Sensor", svm);
         }
 
         [FormatFilter]

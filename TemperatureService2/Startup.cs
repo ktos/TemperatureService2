@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using TemperatureService2.Data;
 using TemperatureService2.Services;
 using Microsoft.Net.Http.Headers;
+using TemperatureService2.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TemperatureService2
 {
@@ -47,6 +49,13 @@ namespace TemperatureService2
                 options.OutputFormatters.Add(new WnsOutputFormatter());
             })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = ApiKeyAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = ApiKeyAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddApiKeyAuthentication(options => options.ApiKey = Configuration["ApiKey"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,18 +73,24 @@ namespace TemperatureService2
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "sensor",
+                    name: "sensor-html",
                     template: "{name}.html",
                     defaults: new { controller = "Home", action = "Sensor" });
 
                 routes.MapRoute(
-                    name: "sensorinanotherformat",
+                    name: "sensor-anotherformat",
                     template: "{name}.{format}",
                     defaults: new { controller = "Home", action = "SensorInAnotherFormat" });
+
+                routes.MapRoute(
+                    name: "sensor",
+                    template: "{name}",
+                    defaults: new { controller = "Home", action = "Sensor" });
 
                 routes.MapRoute(
                     name: "default",

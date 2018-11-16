@@ -23,6 +23,7 @@ namespace TemperatureService2.Test
 
             var svm = new ViewModels.SensorViewModel(sensor);
             Assert.False(svm.Status);
+            Assert.Equal(float.NaN, svm.Data);
         }
 
         [Fact]
@@ -39,6 +40,7 @@ namespace TemperatureService2.Test
 
             var svm = new ViewModels.SensorViewModel(sensor);
             Assert.False(svm.Status);
+            Assert.Equal(float.NaN, svm.Data);
         }
 
         [Fact]

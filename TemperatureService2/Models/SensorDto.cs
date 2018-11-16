@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
-using TemperatureService2.Models;
 
-namespace TemperatureService2.ViewModels
+namespace TemperatureService2.Models
 {
-    public class SensorViewModel
+    public class SensorDto
     {
         /// <summary>
         /// Publicly-visible sensor name, which will be used to
@@ -31,7 +29,7 @@ namespace TemperatureService2.ViewModels
         /// <summary>
         /// Last data from this sensor
         /// </summary>
-        public float Data { get; set; }
+        public float Data { get; set; } = -127;
 
         /// <summary>
         /// The Time sensor was last updated
@@ -43,26 +41,9 @@ namespace TemperatureService2.ViewModels
         /// </summary>
         public bool Status { get; set; }
 
-        public SensorViewModel(Sensor sensor)
-        {
-            Name = sensor.Name;
-            Id = sensor.InternalId;
-            Description = sensor.Description;
-            Type = sensor.Type;
-
-            var newestValue = sensor.Values?.OrderByDescending(x => x.Timestamp).FirstOrDefault();
-            if (newestValue != null)
-            {
-                Data = newestValue.Data;
-                LastUpdated = newestValue.Timestamp;
-
-                Status = DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60);
-            }
-            else
-            {
-                Data = float.NaN;
-                Status = false;
-            }
-        }
+        /// <summary>
+        /// API key if not used in HTTP header
+        /// </summary>
+        public string ApiKey { get; set; }
     }
 }

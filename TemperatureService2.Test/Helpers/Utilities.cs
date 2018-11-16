@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TemperatureService2.Data;
 using TemperatureService2.Models;
 
@@ -31,18 +32,29 @@ namespace TemperatureService2.Test.Helpers
             var list = new List<SensorValue>();
             var r = new Random();
 
-            var id = 1;
-
             foreach (var s in sensors)
             {
                 for (int i = 0; i < r.Next(10); i++)
                 {
-                    list.Add(new SensorValue { Data = r.Next(100), Id = id, Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 10) });
-                    id++;
+                    list.Add(new SensorValue { Data = r.Next(100), Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 10) });
                 }
             }
 
             return list;
+        }
+
+        private static Random random = new Random();
+
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public static float RandomFloat()
+        {
+            return (float)random.NextDouble();
         }
     }
 }

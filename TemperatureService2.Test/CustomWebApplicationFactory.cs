@@ -23,7 +23,7 @@ namespace TemperatureService2.Test
                     .AddEntityFrameworkInMemoryDatabase()
                     .BuildServiceProvider();
 
-                // Add a database context (ApplicationDbContext) using an in-memory 
+                // Add a database context (ApplicationDbContext) using an in-memory
                 // database for testing.
                 services.AddDbContext<SensorsDbContext>(options =>
                 {
@@ -49,7 +49,7 @@ namespace TemperatureService2.Test
                     try
                     {
                         // Seed the database with test data.
-                        Utilities.InitializeDbForTests(db);
+                        Helpers.Utilities.InitializeDbForTests(db);
                     }
                     catch (Exception ex)
                     {
