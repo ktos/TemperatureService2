@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TemperatureService2.Models;
 using TemperatureService2.Repository;
@@ -28,6 +29,14 @@ namespace TemperatureService2.Controllers
                 return View(new SensorViewModel(sensor));
             else
                 return NotFound();
+        }
+
+        [Authorize(Policy = "ApiKey")]
+        [FormatFilter]
+        [HttpPost, HttpPut]
+        public IActionResult UpdateSensor(string name, SensorDto model)
+        {
+            return CreatedAtAction("Sensor", model);
         }
 
         [FormatFilter]
