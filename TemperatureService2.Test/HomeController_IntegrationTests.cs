@@ -21,6 +21,7 @@ namespace TemperatureService2.Test
         [InlineData("/")]
         [InlineData("/Home/Index")]
         [InlineData("/outdoor.html")]
+        [InlineData("/outdoor")]
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
             // Arrange
