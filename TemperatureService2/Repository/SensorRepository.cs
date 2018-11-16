@@ -31,5 +31,48 @@ namespace TemperatureService2.Repository
         {
             return _context.Sensors.Include(x => x.Values).FirstOrDefault(x => x.Name == name);
         }
+
+        public void UpdateSensor(SensorDto sensorDto)
+        {
+            var sensor = GetSensor(sensorDto.Name);
+            if (sensorDto.Description != sensor.Description) sensor.Description = sensorDto.Description;
+            if (sensorDto.Id != sensor.InternalId) sensor.InternalId = sensorDto.Id;
+            if (sensorDto.Type != sensor.Type) sensor.Type = sensorDto.Type;
+            if (sensorDto.Data != float.NaN)
+            {
+                AddSensorReading(sensorDto);
+            }
+
+            _context.SaveChanges();
+        }
+
+        public void AddSensor(SensorDto dto)
+        {
+            var sensor = new Sensor
+            {
+                Description = dto.Description,
+                InternalId = dto.Id,
+                Name = dto.Name,
+                Type = dto.Type
+            };
+
+            var created = _context.Sensors.Add(sensor);
+            if (dto.Data != float.NaN)
+            {
+                AddSensorReading(dto);
+            }
+        }
+
+        public void AddSensorReading(SensorDto dto)
+        {
+            _context.SensorValues.Add(new SensorValue
+            {
+                Data = dto.Data,
+                Sensor = GetSensor(dto.Name),
+                Timestamp = DateTime.UtcNow
+            });
+
+            _context.SaveChanges();
+        }
     }
 }

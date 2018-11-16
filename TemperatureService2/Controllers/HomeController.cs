@@ -36,6 +36,20 @@ namespace TemperatureService2.Controllers
         [HttpPost, HttpPut]
         public IActionResult UpdateSensor(string name, SensorDto model)
         {
+            var sensor = _repository.GetSensor(name);
+
+            if (model.Name == null)
+                model.Name = name;
+
+            if (sensor != null)
+            {
+                _repository.UpdateSensor(model);
+            }
+            else
+            {
+                _repository.AddSensor(model);
+            }
+
             return CreatedAtAction("Sensor", model);
         }
 
