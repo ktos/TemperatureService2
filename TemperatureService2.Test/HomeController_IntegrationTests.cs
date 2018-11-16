@@ -149,6 +149,23 @@ namespace TemperatureService2.Test
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
+        [Fact]
+        public async Task Put_SensorDataWrongModelAuthorized()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var url = $"/outdoor";
+
+            var content = "{aafgaaga";
+            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
+
+            // Act
+            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
         [Theory]
         [InlineData("outdoor")]
         [InlineData("indoor")]
