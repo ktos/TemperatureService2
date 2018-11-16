@@ -42,10 +42,6 @@ namespace TemperatureService2.Repository
             {
                 AddSensorReading(sensorDto);
             }
-            else
-            {
-                return false;
-            }
 
             _context.SaveChanges();
             return true;
