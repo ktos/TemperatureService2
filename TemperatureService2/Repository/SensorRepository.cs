@@ -37,12 +37,13 @@ namespace TemperatureService2.Repository
             if (sensorDto.Description != sensor.Description) sensor.Description = sensorDto.Description;
             if (sensorDto.Id != sensor.InternalId) sensor.InternalId = sensorDto.Id;
             if (sensorDto.Type != sensor.Type) sensor.Type = sensorDto.Type;
-            if (sensorDto.Data != -127 && !AddSensorReading(sensorDto))
+            _context.SaveChanges();
+
+            if (sensorDto.Data.CompareTo(float.NaN) != 0 && !AddSensorReading(sensorDto))
             {
                 return false;
             }
 
-            _context.SaveChanges();
             return true;
         }
 
@@ -59,7 +60,7 @@ namespace TemperatureService2.Repository
             var created = _context.Sensors.Add(sensor);
             _context.SaveChanges();
 
-            if (sensorDto.Data != -127 && !AddSensorReading(sensorDto))
+            if (sensorDto.Data.CompareTo(float.NaN) != 0 && !AddSensorReading(sensorDto))
             {
                 return false;
             }
@@ -69,6 +70,9 @@ namespace TemperatureService2.Repository
 
         public bool AddSensorReading(SensorDto sensorDto)
         {
+            if (IsDataInvalid(sensorDto.Data))
+                return false;
+
             _context.SensorValues.Add(new SensorValue
             {
                 Data = sensorDto.Data,
@@ -78,6 +82,11 @@ namespace TemperatureService2.Repository
 
             _context.SaveChanges();
             return true;
+        }
+
+        private bool IsDataInvalid(float data)
+        {
+            return data.CompareTo(-127.0f) == 0 || data.CompareTo(85.0f) == 0;
         }
     }
 }

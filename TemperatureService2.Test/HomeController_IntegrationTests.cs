@@ -47,6 +47,7 @@ namespace TemperatureService2.Test
         [InlineData("/nonexisting.html")]
         [InlineData("/nonexisting.json")]
         [InlineData("/nonexisting.wns")]
+        [InlineData("/nonexisting")]
         public async Task Get_SensorsReturn404WhenNonExisting(string url)
         {
             // Arrange
@@ -171,6 +172,12 @@ namespace TemperatureService2.Test
             var client = _factory.CreateClient();
             var url = $"/{sensor}";
 
+            var response = await client.GetAsync($"/{sensor}.json").ConfigureAwait(false);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+
+            var oldData = svm.Data;
+
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
 
@@ -178,15 +185,16 @@ namespace TemperatureService2.Test
             var content = JsonConvert.SerializeObject(dto);
 
             // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+            response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
                 .ConfigureAwait(false);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+            responseBody = await response.Content.ReadAsStringAsync();
+            svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
+            Assert.Equal(oldData, svm.Data);
             Assert.Equal(randomId, svm.Id);
             Assert.Equal(randomDescription, svm.Description);
 
@@ -312,9 +320,6 @@ namespace TemperatureService2.Test
             // Act
             var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
                 .ConfigureAwait(false);
-
-            // Assert
-            response.EnsureSuccessStatusCode(); // Status Code 200-299
 
             var responseBody = await response.Content.ReadAsStringAsync();
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);

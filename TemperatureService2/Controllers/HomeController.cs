@@ -44,18 +44,11 @@ namespace TemperatureService2.Controllers
             if (model.Name == null)
                 model.Name = name;
 
-            if (sensor != null)
-            {
-                if (!_repository.UpdateSensor(model))
-                    return BadRequest();
-            }
-            else if (!_repository.AddSensor(model))
-            {
+            var result = (sensor != null) ? _repository.UpdateSensor(model) : _repository.AddSensor(model);
+            if (!result)
                 return BadRequest();
-            }
 
             var svm = new SensorViewModel(_repository.GetSensor(name));
-
             return CreatedAtAction("Sensor", svm);
         }
 
