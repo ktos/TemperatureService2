@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using TemperatureService2.Models;
@@ -35,53 +36,9 @@ namespace TemperatureService2.Authentication
         {
         }
 
-        //protected override Task HandleChallengeAsync(AuthenticationProperties properties)
-        //{
-        //    var principal = new System.Security.Claims.ClaimsPrincipal();
-        //    var at = new AuthenticationTicket(principal, ApiKeyAuthenticationDefaults.AuthenticationScheme);
-
-        //    var apikey = Context.Request.Headers["X-APIKEY"].FirstOrDefault();
-        //    if (string.IsNullOrEmpty(apikey))
-        //    {
-        //        using (var sr = new StreamReader(Context.Request.Body))
-        //        {
-        //            var requestBody = sr.ReadToEnd();
-        //            var sensorData = JsonConvert.DeserializeObject<SensorDto>(requestBody);
-
-        //            if (sensorData == null)
-        //            {
-        //                return Task.CompletedTask;
-
-        //                //return AuthenticateResult.NoResult();
-        //            }
-        //            else
-        //            {
-        //                if (sensorData.ApiKey == Options.ApiKey)
-        //                {
-        //                    Context.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(ApiKeyAuthenticationDefaults.AuthenticationScheme));
-        //                    //return AuthenticateResult.Success(at);
-        //                }
-        //                //else
-        //                //return AuthenticateResult.Fail("API key is invalid");
-        //            }
-        //        }
-        //    }
-        //    else if (apikey == Options.ApiKey)
-        //    {
-        //        Context.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(ApiKeyAuthenticationDefaults.AuthenticationScheme));
-        //        //return AuthenticateResult.Success(at);
-        //    }
-        //    else
-        //    {
-        //        //return AuthenticateResult.NoResult();
-        //    }
-
-        //    return Task.CompletedTask;
-        //}
-
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var claims = new[] { new Claim(ClaimTypes.Name, "user") };
+            var claims = new[] { new Claim(ClaimTypes.Name, "API Key User") };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
             var at = new AuthenticationTicket(principal, ApiKeyAuthenticationDefaults.AuthenticationScheme);
@@ -89,25 +46,30 @@ namespace TemperatureService2.Authentication
             var apikey = Context.Request.Headers["X-APIKEY"].FirstOrDefault();
             if (string.IsNullOrEmpty(apikey))
             {
-                using (var sr = new StreamReader(Context.Request.Body))
-                {
-                    var requestBody = sr.ReadToEnd();
-                    var sensorData = JsonConvert.DeserializeObject<SensorDto>(requestBody);
+                // workaround for https://github.com/aspnet/Security/issues/1638
+                var ms = new MemoryStream();
+                await Request.Body.CopyToAsync(ms);
+                ms.Seek(0, SeekOrigin.Begin);
 
-                    if (sensorData == null)
+                var requestBody = await new StreamReader(ms).ReadToEndAsync();
+                ms.Seek(0, SeekOrigin.Begin);
+                Request.Body = ms;
+
+                var sensorData = JsonConvert.DeserializeObject<SensorDto>(requestBody);
+
+                if (sensorData == null)
+                {
+                    return AuthenticateResult.NoResult();
+                }
+                else
+                {
+                    if (sensorData.ApiKey == Options.ApiKey)
                     {
-                        return AuthenticateResult.NoResult();
+                        Context.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(ApiKeyAuthenticationDefaults.AuthenticationScheme));
+                        return AuthenticateResult.Success(at);
                     }
                     else
-                    {
-                        if (sensorData.ApiKey == Options.ApiKey)
-                        {
-                            Context.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(ApiKeyAuthenticationDefaults.AuthenticationScheme));
-                            return AuthenticateResult.Success(at);
-                        }
-                        else
-                            return AuthenticateResult.Fail("API key is invalid");
-                    }
+                        return AuthenticateResult.Fail("API key is invalid");
                 }
             }
             else if (apikey == Options.ApiKey)
