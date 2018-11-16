@@ -51,5 +51,10 @@ namespace TemperatureService2.Test.Helpers
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        public static float RandomFloat()
+        {
+            return (float)random.NextDouble();
+        }
     }
 }

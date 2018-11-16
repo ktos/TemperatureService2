@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -299,6 +300,47 @@ namespace TemperatureService2.Test
 
             Assert.Equal(9.0f, svm.Data);
 
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
+        [InlineData("outdoor")]
+        [InlineData("indoor")]
+        public async Task Post_SensorDataLikeDevice(string sensor)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var url = $"/{sensor}";
+            var data = Utilities.RandomFloat().ToString("F2", CultureInfo.InvariantCulture);
+
+            var content = "{ \"name\": \"" + sensor + "\", \"data\": \"" + data + "\", \"apikey\": \"" + "testapi" + "\" }";
+
+            var now = DateTime.UtcNow;
+            // Act
+            var response = await client.PostAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+
+            Assert.Equal(data, svm.Data.ToString("F2", CultureInfo.InvariantCulture));
+
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+
+            response = await client.GetAsync($"/{sensor}.json").ConfigureAwait(false);
+            responseBody = await response.Content.ReadAsStringAsync();
+            svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+
+            Assert.Equal(data, svm.Data.ToString("F2", CultureInfo.InvariantCulture));
+
+            var timeDiff = svm.LastUpdated - now;
+
+            Assert.InRange(timeDiff.TotalMilliseconds, -1000, 1000);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
         }
