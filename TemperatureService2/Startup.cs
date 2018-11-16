@@ -56,14 +56,6 @@ namespace TemperatureService2
                 options.DefaultChallengeScheme = ApiKeyAuthenticationDefaults.AuthenticationScheme;
             })
                 .AddApiKeyAuthentication(options => options.ApiKey = Configuration["ApiKey"]);
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ApiKey", policy =>
-                    policy.Requirements.Add(new ApiKeyRequirement(Configuration["ApiKey"])));
-            });
-
-            services.AddSingleton<IAuthorizationHandler, ApiKeyHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,6 +79,11 @@ namespace TemperatureService2
             {
                 routes.MapRoute(
                     name: "sensor",
+                    template: "{name}",
+                    defaults: new { controller = "Home", action = "Sensor" });
+
+                routes.MapRoute(
+                    name: "sensor-html",
                     template: "{name}.html",
                     defaults: new { controller = "Home", action = "Sensor" });
 
