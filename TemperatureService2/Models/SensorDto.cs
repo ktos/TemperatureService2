@@ -32,7 +32,7 @@ namespace TemperatureService2.Models
         /// <summary>
         /// Last data from this sensor
         /// </summary>
-        public float Data { get; set; } = float.NaN;
+        public float Data { get; set; } = -127;
 
         /// <summary>
         /// The Time sensor was last updated

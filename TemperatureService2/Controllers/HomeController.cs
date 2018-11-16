@@ -33,24 +33,33 @@ namespace TemperatureService2.Controllers
 
         [Authorize]
         [FormatFilter]
-        [HttpPost, HttpPut]
-        public IActionResult UpdateSensor(string name, SensorDto model)
+        [HttpPost("/{name}"), HttpPut("/{name}")]
+        public IActionResult UpdateSensor([FromRoute]string name, [FromBody]SensorDto model)
         {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
             var sensor = _repository.GetSensor(name);
+
+            if (model == null)
+                return BadRequest();
 
             if (model.Name == null)
                 model.Name = name;
 
             if (sensor != null)
             {
-                _repository.UpdateSensor(model);
+                if (!_repository.UpdateSensor(model))
+                    return BadRequest();
             }
-            else
+            else if (!_repository.AddSensor(model))
             {
-                _repository.AddSensor(model);
+                return BadRequest();
             }
 
-            return CreatedAtAction("Sensor", model);
+            var svm = new SensorViewModel(_repository.GetSensor(name));
+
+            return CreatedAtAction("Sensor", svm);
         }
 
         [FormatFilter]

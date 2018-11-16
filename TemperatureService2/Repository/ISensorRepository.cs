@@ -11,10 +11,10 @@ namespace TemperatureService2.Repository
 
         Sensor GetSensor(string name);
 
-        void UpdateSensor(SensorDto sensorDto);
+        bool UpdateSensor(SensorDto sensorDto);
 
-        void AddSensorReading(SensorDto dto);
+        bool AddSensorReading(SensorDto dto);
 
-        void AddSensor(SensorDto dto);
+        bool AddSensor(SensorDto dto);
     }
 }
