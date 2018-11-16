@@ -52,7 +52,15 @@ namespace TemperatureService2.Authentication
                 ms.Seek(0, SeekOrigin.Begin);
                 Request.Body = ms;
 
-                var sensorData = JsonConvert.DeserializeObject<SensorDto>(requestBody);
+                SensorDto sensorData = null;
+                try
+                {
+                    sensorData = JsonConvert.DeserializeObject<SensorDto>(requestBody);
+                }
+                catch (JsonReaderException)
+                {
+                    sensorData = null;
+                }
 
                 if (sensorData == null)
                 {
