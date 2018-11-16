@@ -31,7 +31,7 @@ namespace TemperatureService2.Controllers
                 return NotFound();
         }
 
-        [Authorize(Policy = "ApiKey")]
+        [Authorize]
         [FormatFilter]
         [HttpPost, HttpPut]
         public IActionResult UpdateSensor(string name, SensorDto model)

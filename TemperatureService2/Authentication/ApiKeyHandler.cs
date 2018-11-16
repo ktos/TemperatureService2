@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TemperatureService2.Models;
 
-namespace TemperatureService2.Utilities
+namespace TemperatureService2.Authentication
 {
     public class ApiKeyHandler : AuthorizationHandler<ApiKeyRequirement>
     {

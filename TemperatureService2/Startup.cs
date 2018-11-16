@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using TemperatureService2.Data;
 using TemperatureService2.Services;
 using Microsoft.Net.Http.Headers;
-using TemperatureService2.Utilities;
+using TemperatureService2.Authentication;
 using Microsoft.AspNetCore.Authorization;
 
 namespace TemperatureService2
@@ -50,6 +50,13 @@ namespace TemperatureService2
             })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = ApiKeyAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = ApiKeyAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddApiKeyAuthentication(options => options.ApiKey = Configuration["ApiKey"]);
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ApiKey", policy =>
@@ -74,6 +81,7 @@ namespace TemperatureService2
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
