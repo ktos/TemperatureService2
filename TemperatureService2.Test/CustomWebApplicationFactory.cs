@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TemperatureService2.Authentication;
 using TemperatureService2.Data;
 using TemperatureService2.Test.Helpers;
 
@@ -56,6 +58,9 @@ namespace TemperatureService2.Test
                         logger.LogError(ex, $"An error occurred seeding the " +
                             "database with test messages. Error: {ex.Message}");
                     }
+
+                    var configuration = scopedServices.GetRequiredService<IConfiguration>();
+                    configuration["ApiKey"] = "testapi";
                 }
             });
         }
