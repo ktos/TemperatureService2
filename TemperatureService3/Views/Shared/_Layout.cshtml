@@ -17,6 +17,8 @@
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/light.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/peicon.min.css" asp-append-version="true" />
     </environment>
 
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -26,7 +28,9 @@
         <div class="sidebar has-image">
             <div class="sidebar-wrapper">
                 <div class="logo">
+
                     <a asp-action="Index" asp-controller="Home" class="simple-text">
+                        <img src="~/images/logo-50.png" alt="" />
                         TemperatureApp
                     </a>
                 </div>
@@ -70,7 +74,7 @@
                         </ul>
                     </nav>
                     <p class="copyright pull-right">
-                        &copy; @DateTime.Now.Year - TemperatureApp
+                        &copy; @DateTime.Now.Year - <a href="https://github.com/ktos/TemperatureService3">TemperatureApp</a>
                     </p>
                 </div>
             </footer>
@@ -84,11 +88,11 @@
         <script src="~/js/light-bootstrap-dashboard.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
                 crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
         </script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
