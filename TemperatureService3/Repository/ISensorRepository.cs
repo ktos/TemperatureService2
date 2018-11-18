@@ -7,6 +7,8 @@ namespace TemperatureService3.Repository
     {
         IEnumerable<Sensor> GetAllSensors();
 
+        IEnumerable<Sensor> GetAllSensorsWithValues();
+
         Sensor GetSensor(string name);
 
         bool UpdateSensor(SensorDto sensorDto);
