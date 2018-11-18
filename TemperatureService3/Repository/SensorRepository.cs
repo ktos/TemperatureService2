@@ -21,6 +21,11 @@ namespace TemperatureService3.Repository
             return _context.Sensors.ToList();
         }
 
+        public IEnumerable<Sensor> GetAllSensorsWithValues()
+        {
+            return _context.Sensors.Include(x => x.Values).ToList();
+        }
+
         public Sensor GetSensor(string name)
         {
             return _context.Sensors.Include(x => x.Values).FirstOrDefault(x => x.Name == name);

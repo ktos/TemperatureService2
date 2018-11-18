@@ -19,7 +19,7 @@ namespace TemperatureService3.Controllers
 
         public IActionResult Index()
         {
-            var sensors = _repository.GetAllSensors();
+            var sensors = _repository.GetAllSensorsWithValues();
 
             ViewData["Title"] = "Dashboard";
             return View(new IndexViewModel(sensors));
