@@ -1,5 +1,24 @@
 ﻿@model IndexViewModel
 
+@section Menu
+    {
+    <li class="active">
+        <a asp-action="Index" asp-controller="Home">
+            <i class="pe-7s-graph"></i>
+            <p>Dashboard</p>
+        </a>
+    </li>
+    @foreach (var item in Model.Sensors)
+    {
+        <li>
+            <a asp-action="Sensor" asp-controller="Home" asp-route-name="@item.Name">
+                <i class="pe-7s-angle-right-circle"></i>
+                <p>@item.Name</p>
+            </a>
+        </li>
+    }
+}
+
 @foreach (var item in Model.Sensors)
 {
     <div class="col-md-3">
@@ -13,7 +32,7 @@
                 <div class="footer">
                     <hr>
                     <div class="stats">
-                        <i class="fa fa-clock-o"></i> @item.LastUpdated
+                        <i class="fa fa-clock-o"></i> @item.LastUpdated.Humanize(culture: new System.Globalization.CultureInfo("pl-PL"))
                     </div>
                 </div>
             </div>
