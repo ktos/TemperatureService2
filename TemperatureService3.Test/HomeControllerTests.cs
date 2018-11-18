@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TemperatureService3.Controllers;
 using TemperatureService3.Models;
 using TemperatureService3.Repository;
+using TemperatureService3.ViewModels;
 using Xunit;
 
 namespace TemperatureService3.Test
@@ -34,7 +35,7 @@ namespace TemperatureService3.Test
             };
 
             sensorsRepoMock
-                .Setup(repo => repo.GetAllSensors())
+                .Setup(repo => repo.GetAllSensorsWithValues())
                 .Returns(mockTempdataList);
 
             // Act
@@ -42,9 +43,47 @@ namespace TemperatureService3.Test
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<IEnumerable<Sensor>>(viewResult.ViewData.Model);
-            Assert.Equal(2, model.Count());
-            Assert.Null(model.First().Values);
+            var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
+            Assert.Equal("Dashboard", viewResult.ViewData["Title"]);
+            Assert.Equal(2, model.Sensors.Count());
+            Assert.Equal(float.NaN, model.Sensors.First().Data);
+        }
+
+        [Fact]
+        public void Index_ReturnsAllSensorsWithValues()
+        {
+            // Arrange
+            var mockSensors = new List<Sensor>
+            {
+                new Sensor { Name = "outdoor", Description = "zewnêtrzny", InternalId = "1", Type = SensorType.Temperature },
+                new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.Temperature }
+            };
+
+            mockSensors[0].Values = new List<SensorValue>
+            {
+                new SensorValue { Data = 1.0f, Sensor = mockSensors[0], Timestamp = DateTime.UtcNow },
+                new SensorValue { Data = 2.0f, Sensor = mockSensors[0], Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(15) }
+            };
+
+            mockSensors[1].Values = new List<SensorValue>
+            {
+                new SensorValue { Data = 1.0f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow },
+                new SensorValue { Data = 2.0f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(15) }
+            };
+
+            sensorsRepoMock
+                .Setup(repo => repo.GetAllSensorsWithValues())
+                .Returns(mockSensors);
+
+            // Act
+            var result = controller.Index();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
+            Assert.Equal("Dashboard", viewResult.ViewData["Title"]);
+            Assert.Equal(2, model.Sensors.Count());
+            Assert.Equal(1.0f, model.Sensors.First().Data);
         }
 
         [Fact]
