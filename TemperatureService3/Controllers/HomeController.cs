@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Diagnostics;
 using TemperatureService3.Models;
 using TemperatureService3.Repository;
@@ -18,7 +19,10 @@ namespace TemperatureService3.Controllers
 
         public IActionResult Index()
         {
-            return View(_repository.GetAllSensors());
+            var sensors = _repository.GetAllSensors();
+
+            ViewData["Title"] = "Dashboard";
+            return View(new IndexViewModel(sensors));
         }
 
         public IActionResult Sensor(string name)
