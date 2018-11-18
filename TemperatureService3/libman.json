@@ -1,12 +1,7 @@
 {
   "version": "1.0",
-  "defaultProvider": "filesystem",
+  "defaultProvider": "unpkg",
   "libraries": [
-    {
-      "provider": "cdnjs",
-      "library": "Chart.js@2.7.3",
-      "destination": "wwwroot/lib/chart.js/"
-    },
     {
       "provider": "cdnjs",
       "library": "twitter-bootstrap@3.3.7",
