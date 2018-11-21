@@ -23,26 +23,14 @@ namespace TemperatureService3.Repository
 
         public IEnumerable<Sensor> GetAllSensorsWithValues()
         {
-            var sensors = GetAllSensors();
-            var result = new List<Sensor>();
-
-            foreach (var item in sensors)
+            return _context.Sensors.Select(x => new Sensor
             {
-                result.Add(GetSensorWithLast50Values(item.Name));
-            }
-
-            return result;
-        }
-
-        public Sensor GetSensorWithLast50Values(string name)
-        {
-            var sensor = _context.Sensors.First(x => x.Name == name);
-            sensor.Values = _context.SensorValues
-                .Where(x => x.Sensor == sensor)
-                .OrderByDescending(x => x.Timestamp)
-                .Take(50).ToList();
-
-            return sensor;
+                Description = x.Description,
+                InternalId = x.InternalId,
+                Name = x.Name,
+                Type = x.Type,
+                Values = x.Values.OrderByDescending(val => val.Timestamp).Take(50).ToList()
+            }).ToList();
         }
 
         public Sensor GetSensor(string name)
