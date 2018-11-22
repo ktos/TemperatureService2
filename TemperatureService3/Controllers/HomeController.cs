@@ -30,7 +30,7 @@ namespace TemperatureService3.Controllers
             var sensor = _repository.GetSensor(name);
 
             if (sensor != null)
-                return View(new SensorViewModel(sensor));
+                return View(SensorViewModel.FromSensor(sensor));
             else
                 return NotFound();
         }
@@ -52,7 +52,7 @@ namespace TemperatureService3.Controllers
             if (!result)
                 return BadRequest();
 
-            var svm = new SensorViewModel(_repository.GetSensor(name));
+            var svm = SensorViewModel.FromSensor(_repository.GetSensor(name));
             return CreatedAtAction("Sensor", svm);
         }
 
@@ -62,7 +62,7 @@ namespace TemperatureService3.Controllers
             var sensor = _repository.GetSensor(name);
 
             if (sensor != null)
-                return Ok(new SensorViewModel(sensor));
+                return Ok(SensorViewModel.FromSensor(sensor));
             else
                 return NotFound();
         }

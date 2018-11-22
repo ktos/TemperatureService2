@@ -16,7 +16,7 @@ namespace TemperatureService3.ViewModels
 
             foreach (var item in sensors)
             {
-                Sensors.Add(new SensorViewModel(item));
+                Sensors.Add(SensorViewModel.FromSensor(item));
             }
         }
     }

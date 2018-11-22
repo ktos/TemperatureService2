@@ -21,7 +21,7 @@ namespace TemperatureService3.Test
                 Values = null
             };
 
-            var svm = new ViewModels.SensorViewModel(sensor);
+            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
             Assert.False(svm.Status);
             Assert.Equal(float.NaN, svm.Data);
         }
@@ -38,7 +38,7 @@ namespace TemperatureService3.Test
                 Values = new List<SensorValue>()
             };
 
-            var svm = new ViewModels.SensorViewModel(sensor);
+            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
             Assert.False(svm.Status);
             Assert.Equal(float.NaN, svm.Data);
         }
@@ -62,7 +62,7 @@ namespace TemperatureService3.Test
                 }
             };
 
-            var svm = new ViewModels.SensorViewModel(sensor);
+            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
             Assert.True(svm.Status);
             Assert.Equal("outdoor", svm.Name);
             Assert.Equal("zewnątrz", svm.Description);
@@ -91,7 +91,7 @@ namespace TemperatureService3.Test
                 }
             };
 
-            var svm = new ViewModels.SensorViewModel(sensor);
+            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
             Assert.False(svm.Status);
             Assert.Equal("outdoor", svm.Name);
             Assert.Equal("zewnątrz", svm.Description);

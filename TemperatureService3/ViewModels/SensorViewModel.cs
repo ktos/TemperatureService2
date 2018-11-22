@@ -43,26 +43,36 @@ namespace TemperatureService3.ViewModels
         /// </summary>
         public bool Status { get; set; }
 
-        public SensorViewModel(Sensor sensor)
+        /// <summary>
+        /// Creates a new SensorViewModel based on the existing Sensor
+        /// </summary>
+        /// <param name="sensor">Base of new SensorViewModel</param>
+        /// <returns>SensorViewModel with all data taken from the Sensor, including values</returns>
+        public static SensorViewModel FromSensor(Sensor sensor)
         {
-            Name = sensor.Name;
-            Id = sensor.InternalId;
-            Description = sensor.Description;
-            Type = sensor.Type;
+            var result = new SensorViewModel
+            {
+                Name = sensor.Name,
+                Id = sensor.InternalId,
+                Description = sensor.Description,
+                Type = sensor.Type,
+            };
 
             var newestValue = sensor.Values?.OrderByDescending(x => x.Timestamp).FirstOrDefault();
             if (newestValue != null)
             {
-                Data = newestValue.Data;
-                LastUpdated = newestValue.Timestamp;
+                result.Data = newestValue.Data;
+                result.LastUpdated = newestValue.Timestamp;
 
-                Status = DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60);
+                result.Status = DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60);
             }
             else
             {
-                Data = float.NaN;
-                Status = false;
+                result.Data = float.NaN;
+                result.Status = false;
             }
+
+            return result;
         }
     }
 }
