@@ -50,6 +50,31 @@ namespace TemperatureService3.Test
         }
 
         [Fact]
+        public void Index_ReturnsAllSensorsWithoutValuesAndHidden()
+        {
+            // Arrange
+            var mockTempdataList = new List<Sensor>
+            {
+                new Sensor { Name = "outdoor", Description = "zewnêtrzny", InternalId = "1", Type = SensorType.Temperature, IsHidden = true },
+                new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.Temperature }
+            };
+
+            sensorsRepoMock
+                .Setup(repo => repo.GetAllSensorsWithValues())
+                .Returns(mockTempdataList);
+
+            // Act
+            var result = controller.Index();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
+            Assert.Equal("Dashboard", viewResult.ViewData["Title"]);
+            Assert.Equal(1, model.Sensors.Count());
+            Assert.Equal(float.NaN, model.Sensors.First().Data);
+        }
+
+        [Fact]
         public void Index_ReturnsAllSensorsWithValues()
         {
             // Arrange
