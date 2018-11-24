@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using TemperatureService3.Models;
+using TemperatureService3.ViewModels;
 
 namespace TemperatureService3.Test
 {
@@ -99,6 +100,77 @@ namespace TemperatureService3.Test
             Assert.Equal(SensorType.Temperature, svm.Type);
             Assert.Equal(1, svm.Data);
             Assert.Equal(now - TimeSpan.FromMinutes(60), svm.LastUpdated);
+        }
+
+        [Fact]
+        public void SensorViewModel_DifferenceProperlyCalculated()
+        {
+            var now = DateTime.UtcNow;
+
+            var sensor = new Sensor
+            {
+                Name = "outdoor",
+                Description = "zewnątrz",
+                InternalId = "1",
+                Type = SensorType.Temperature,
+                Values = new List<SensorValue>
+                {
+                    new SensorValue {  Data = 1, Id = 1, Timestamp = now - TimeSpan.FromMinutes(60) },
+                    new SensorValue {  Data = 2, Id = 2, Timestamp = now - TimeSpan.FromMinutes(75) },
+                    new SensorValue {  Data = 3, Id = 3, Timestamp = now - TimeSpan.FromMinutes(90) }
+                }
+            };
+
+            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
+            Assert.Equal(Difference.Lowering, svm.DifferenceFromPrevious);
+
+            sensor = new Sensor
+            {
+                Name = "outdoor",
+                Description = "zewnątrz",
+                InternalId = "1",
+                Type = SensorType.Temperature,
+                Values = new List<SensorValue>
+                {
+                    new SensorValue {  Data = 3, Id = 1, Timestamp = now - TimeSpan.FromMinutes(60) },
+                    new SensorValue {  Data = 2, Id = 2, Timestamp = now - TimeSpan.FromMinutes(75) },
+                    new SensorValue {  Data = 1, Id = 3, Timestamp = now - TimeSpan.FromMinutes(90) }
+                }
+            };
+            svm = ViewModels.SensorViewModel.FromSensor(sensor);
+            Assert.Equal(Difference.Rising, svm.DifferenceFromPrevious);
+
+            sensor = new Sensor
+            {
+                Name = "outdoor",
+                Description = "zewnątrz",
+                InternalId = "1",
+                Type = SensorType.Temperature,
+                Values = new List<SensorValue>
+                {
+                    new SensorValue {  Data = 2, Id = 1, Timestamp = now - TimeSpan.FromMinutes(60) },
+                    new SensorValue {  Data = 2, Id = 2, Timestamp = now - TimeSpan.FromMinutes(75) },
+                    new SensorValue {  Data = 1, Id = 3, Timestamp = now - TimeSpan.FromMinutes(90) }
+                }
+            };
+            svm = ViewModels.SensorViewModel.FromSensor(sensor);
+            Assert.Equal(Difference.Steady, svm.DifferenceFromPrevious);
+
+            sensor = new Sensor
+            {
+                Name = "outdoor",
+                Description = "zewnątrz",
+                InternalId = "1",
+                Type = SensorType.Temperature,
+                Values = new List<SensorValue>
+                {
+                    new SensorValue {  Data = 2.3f, Id = 1, Timestamp = now - TimeSpan.FromMinutes(60) },
+                    new SensorValue {  Data = 2, Id = 2, Timestamp = now - TimeSpan.FromMinutes(75) },
+                    new SensorValue {  Data = 1, Id = 3, Timestamp = now - TimeSpan.FromMinutes(90) }
+                }
+            };
+            svm = ViewModels.SensorViewModel.FromSensor(sensor);
+            Assert.Equal(Difference.Steady, svm.DifferenceFromPrevious);
         }
     }
 }

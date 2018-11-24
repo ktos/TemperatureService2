@@ -56,7 +56,8 @@ namespace TemperatureService3.Test
             var mockSensors = new List<Sensor>
             {
                 new Sensor { Name = "outdoor", Description = "zewnêtrzny", InternalId = "1", Type = SensorType.Temperature },
-                new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.Temperature }
+                new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.Temperature },
+                new Sensor { Name = "indoor2", Description = "wewnêtrzny2", InternalId = "3", Type = SensorType.Temperature }
             };
 
             mockSensors[0].Values = new List<SensorValue>
@@ -67,8 +68,14 @@ namespace TemperatureService3.Test
 
             mockSensors[1].Values = new List<SensorValue>
             {
+                new SensorValue { Data = 2.0f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow },
+                new SensorValue { Data = 1.0f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(15) }
+            };
+
+            mockSensors[2].Values = new List<SensorValue>
+            {
                 new SensorValue { Data = 1.0f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow },
-                new SensorValue { Data = 2.0f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(15) }
+                new SensorValue { Data = 1.2f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(15) }
             };
 
             sensorsRepoMock
@@ -82,8 +89,11 @@ namespace TemperatureService3.Test
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
             Assert.Equal("Dashboard", viewResult.ViewData["Title"]);
-            Assert.Equal(2, model.Sensors.Count());
+            Assert.Equal(3, model.Sensors.Count());
             Assert.Equal(1.0f, model.Sensors.First().Data);
+            Assert.Equal(Difference.Lowering, model.Sensors.First().DifferenceFromPrevious);
+            Assert.Equal(Difference.Rising, model.Sensors.Skip(1).First().DifferenceFromPrevious);
+            Assert.Equal(Difference.Steady, model.Sensors.Skip(2).First().DifferenceFromPrevious);
         }
 
         [Fact]

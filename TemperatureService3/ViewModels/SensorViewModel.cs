@@ -4,6 +4,13 @@ using TemperatureService3.Models;
 
 namespace TemperatureService3.ViewModels
 {
+    public enum Difference
+    {
+        Steady,
+        Lowering,
+        Rising
+    }
+
     public class SensorViewModel
     {
         /// <summary>
@@ -44,12 +51,20 @@ namespace TemperatureService3.ViewModels
         public bool Status { get; set; }
 
         /// <summary>
+        /// What is the difference between latest and previous data:
+        /// is it rising, lowering or staying in the same level
+        /// </summary>
+        public Difference DifferenceFromPrevious { get; set; }
+
+        /// <summary>
         /// Creates a new SensorViewModel based on the existing Sensor
         /// </summary>
         /// <param name="sensor">Base of new SensorViewModel</param>
         /// <returns>SensorViewModel with all data taken from the Sensor, including values</returns>
         public static SensorViewModel FromSensor(Sensor sensor)
         {
+            var eps = 0.5;
+
             var result = new SensorViewModel
             {
                 Name = sensor.Name,
@@ -58,7 +73,8 @@ namespace TemperatureService3.ViewModels
                 Type = sensor.Type,
             };
 
-            var newestValue = sensor.Values?.OrderByDescending(x => x.Timestamp).FirstOrDefault();
+            var orderedValues = sensor.Values?.OrderByDescending(x => x.Timestamp);
+            var newestValue = orderedValues.FirstOrDefault();
             if (newestValue != null)
             {
                 result.Data = newestValue.Data;
@@ -71,6 +87,14 @@ namespace TemperatureService3.ViewModels
                 result.Data = float.NaN;
                 result.Status = false;
             }
+
+            var secondNewest = orderedValues.Skip(1).First();
+            if (newestValue.Data - secondNewest.Data > eps)
+                result.DifferenceFromPrevious = Difference.Rising;
+            else if (newestValue.Data - secondNewest.Data < -eps)
+                result.DifferenceFromPrevious = Difference.Lowering;
+            else
+                result.DifferenceFromPrevious = Difference.Steady;
 
             return result;
         }
