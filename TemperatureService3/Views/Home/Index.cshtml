@@ -35,6 +35,16 @@
                     <div class="stats">
                         <i class="fa fa-clock-o"></i> @item.LastUpdated.Humanize(culture: new System.Globalization.CultureInfo("pl-PL"))
                         <i class="fa @(item.Status ? "fa-check-circle" : "fa-times-circle")" title="Status: @item.Status"></i>
+                        @{
+                            if (item.DifferenceFromPrevious == Difference.Lowering)
+                            {
+                                <i class="fa fa-level-down"></i>
+                            }
+                            else if (item.DifferenceFromPrevious == Difference.Rising)
+                            {
+                                <i class="fa fa-level-up"></i>
+                            }                            
+                        }
                     </div>
                 </div>
             </div>
