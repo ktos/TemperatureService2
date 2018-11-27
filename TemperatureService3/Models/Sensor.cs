@@ -41,6 +41,11 @@ namespace TemperatureService3.Models
         public SensorType Type { get; set; }
 
         /// <summary>
+        /// Is the sensor shown on the dashboard
+        /// </summary>
+        public bool IsHidden { get; set; }
+
+        /// <summary>
         /// Collection of historical values received from this sensor
         /// </summary>
         public virtual IEnumerable<SensorValue> Values { get; set; }
