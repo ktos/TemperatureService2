@@ -74,27 +74,27 @@ namespace TemperatureService3.ViewModels
             };
 
             var orderedValues = sensor.Values?.OrderByDescending(x => x.Timestamp);
-            var newestValue = orderedValues.FirstOrDefault();
+            var newestValue = orderedValues?.FirstOrDefault();
             if (newestValue != null)
             {
                 result.Data = newestValue.Data;
                 result.LastUpdated = newestValue.Timestamp;
 
                 result.Status = DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60);
+
+                var secondNewest = orderedValues.Skip(1).First();
+                if (newestValue.Data - secondNewest.Data > eps)
+                    result.DifferenceFromPrevious = Difference.Rising;
+                else if (newestValue.Data - secondNewest.Data < -eps)
+                    result.DifferenceFromPrevious = Difference.Lowering;
+                else
+                    result.DifferenceFromPrevious = Difference.Steady;
             }
             else
             {
                 result.Data = float.NaN;
                 result.Status = false;
             }
-
-            var secondNewest = orderedValues.Skip(1).First();
-            if (newestValue.Data - secondNewest.Data > eps)
-                result.DifferenceFromPrevious = Difference.Rising;
-            else if (newestValue.Data - secondNewest.Data < -eps)
-                result.DifferenceFromPrevious = Difference.Lowering;
-            else
-                result.DifferenceFromPrevious = Difference.Steady;
 
             return result;
         }
