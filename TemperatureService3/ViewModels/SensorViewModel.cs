@@ -6,6 +6,7 @@ namespace TemperatureService3.ViewModels
 {
     public enum Difference
     {
+        Unknown,
         Steady,
         Lowering,
         Rising
@@ -71,30 +72,34 @@ namespace TemperatureService3.ViewModels
                 Id = sensor.InternalId,
                 Description = sensor.Description,
                 Type = sensor.Type,
+                Data = float.NaN,
+                Status = false,
+                DifferenceFromPrevious = Difference.Unknown
             };
 
             var orderedValues = sensor.Values?.OrderByDescending(x => x.Timestamp);
-            var newestValue = orderedValues.FirstOrDefault();
-            if (newestValue != null)
+            if (orderedValues != null)
             {
-                result.Data = newestValue.Data;
-                result.LastUpdated = newestValue.Timestamp;
+                var newestValue = orderedValues.FirstOrDefault();
 
-                result.Status = DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60);
-            }
-            else
-            {
-                result.Data = float.NaN;
-                result.Status = false;
-            }
+                if (newestValue != null)
+                {
+                    result.Data = newestValue.Data;
+                    result.LastUpdated = newestValue.Timestamp;
+                    result.Status = DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60);
 
-            var secondNewest = orderedValues.Skip(1).First();
-            if (newestValue.Data - secondNewest.Data > eps)
-                result.DifferenceFromPrevious = Difference.Rising;
-            else if (newestValue.Data - secondNewest.Data < -eps)
-                result.DifferenceFromPrevious = Difference.Lowering;
-            else
-                result.DifferenceFromPrevious = Difference.Steady;
+                    if (orderedValues.Count() > 1)
+                    {
+                        var secondNewest = orderedValues.Skip(1).First();
+                        if (newestValue.Data - secondNewest.Data > eps)
+                            result.DifferenceFromPrevious = Difference.Rising;
+                        else if (newestValue.Data - secondNewest.Data < -eps)
+                            result.DifferenceFromPrevious = Difference.Lowering;
+                        else
+                            result.DifferenceFromPrevious = Difference.Steady;
+                    }
+                }
+            }
 
             return result;
         }
