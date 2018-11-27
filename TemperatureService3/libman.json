@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "defaultProvider": "unpkg",
+  "defaultProvider": "cdnjs",
   "libraries": [
     {
       "provider": "cdnjs",
@@ -11,6 +11,11 @@
       "provider": "cdnjs",
       "library": "jquery@3.3.1",
       "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "font-awesome@4.2.0",
+      "destination": "wwwroot/lib/fontawesome"
     }
   ]
 }
