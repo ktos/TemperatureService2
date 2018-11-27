@@ -29,6 +29,7 @@ namespace TemperatureService3.Repository
                 InternalId = x.InternalId,
                 Name = x.Name,
                 Type = x.Type,
+                IsHidden = x.IsHidden,
                 Values = x.Values.OrderByDescending(val => val.Timestamp).Take(50).ToList()
             }).ToList();
         }
