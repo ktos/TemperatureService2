@@ -53,15 +53,27 @@ namespace TemperatureService3.Test
         public void Index_ReturnsAllSensorsWithoutValuesAndHidden()
         {
             // Arrange
-            var mockTempdataList = new List<Sensor>
+            var mockSensors = new List<Sensor>
             {
                 new Sensor { Name = "outdoor", Description = "zewnêtrzny", InternalId = "1", Type = SensorType.Temperature, IsHidden = true },
                 new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.Temperature }
             };
 
+            mockSensors[0].Values = new List<SensorValue>
+            {
+                new SensorValue { Data = 1.0f, Sensor = mockSensors[0], Timestamp = DateTime.UtcNow },
+                new SensorValue { Data = 2.0f, Sensor = mockSensors[0], Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(15) }
+            };
+
+            mockSensors[1].Values = new List<SensorValue>
+            {
+                new SensorValue { Data = 2.0f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow },
+                new SensorValue { Data = 1.0f, Sensor = mockSensors[1], Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(15) }
+            };
+
             sensorsRepoMock
                 .Setup(repo => repo.GetAllSensorsWithValues())
-                .Returns(mockTempdataList);
+                .Returns(mockSensors);
 
             // Act
             var result = controller.Index();
@@ -70,8 +82,8 @@ namespace TemperatureService3.Test
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
             Assert.Equal("Dashboard", viewResult.ViewData["Title"]);
-            Assert.Equal(1, model.Sensors.Count());
-            Assert.Equal(float.NaN, model.Sensors.First().Data);
+            Assert.Single(model.Sensors);
+            Assert.Equal(2.0f, model.Sensors.First().Data);
         }
 
         [Fact]
