@@ -70,7 +70,7 @@ namespace TemperatureService3.Test
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IndexViewModel>(viewResult.ViewData.Model);
             Assert.Equal("Dashboard", viewResult.ViewData["Title"]);
-            Assert.Equal(1, model.Sensors.Count());
+            Assert.Single(model.Sensors);
             Assert.Equal(float.NaN, model.Sensors.First().Data);
         }
 
