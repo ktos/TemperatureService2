@@ -1,0 +1,17 @@
+﻿@model MenuViewModel
+
+<li class="@(Model.Active == null ? "active" : "")">
+    <a asp-action="Index" asp-controller="Home">
+        <i class="pe-7s-graph"></i>
+        <p>Dashboard</p>
+    </a>
+</li>
+@foreach (var item in Model.Sensors)
+{
+    <li class="@(Model.Active == item ? "active" : "")">
+        <a asp-action="Sensor" asp-controller="Home" asp-route-name="@item.Name">
+            <i class="pe-7s-angle-right-circle"></i>
+            <p>@item.Name</p>
+        </a>
+    </li>
+}
