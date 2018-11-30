@@ -1,4 +1,4 @@
-﻿@model TemperatureService3.ViewModels.SensorViewModel
+﻿@model TemperatureService3.ViewModels.SensorPageViewModel
 
 @{
     ViewData["Title"] = "Sensor";
@@ -25,17 +25,27 @@
 
 <div class="row">
     <div class="col-md-6">
-        <partial name="SensorCard" model="Model" />
+        <partial name="SensorCard" model="Model.Sensor" />
     </div>
 
     <div class="col-md-6">
         <div class="card">
             <div class="content">
-                <p><strong>@Html.DisplayNameFor(model => model.Name)</strong>: @Model.Name</p>
-                <p><strong>@Html.DisplayNameFor(model => model.Description)</strong>: @Model.Description</p>
-                <p><strong>@Html.DisplayNameFor(model => model.Id)</strong>: @Model.Id</p>
-                <p><strong>@Html.DisplayNameFor(model => model.Type)</strong>: @Model.Type</p>
+                <p><strong>@Html.DisplayNameFor(model => model.Sensor.Name)</strong>: @Model.Sensor.Name</p>
+                <p><strong>@Html.DisplayNameFor(model => model.Sensor.Description)</strong>: @Model.Sensor.Description</p>
+                <p><strong>@Html.DisplayNameFor(model => model.Sensor.Id)</strong>: @Model.Sensor.Id</p>
+                <p><strong>@Html.DisplayNameFor(model => model.Sensor.Type)</strong>: @Model.Sensor.Type</p>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        @foreach (var item in Model.Last24Hours)
+        {
+            <p>@item.Timestamp</p>
+            <p>@item.Value</p>
+        }
     </div>
 </div>
