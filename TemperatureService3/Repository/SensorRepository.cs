@@ -39,15 +39,15 @@ namespace TemperatureService3.Repository
             return _context.Sensors.Include(x => x.Values).FirstOrDefault(x => x.Name == name);
         }
 
-        public IEnumerable<GroupedTempData> GetSensorHistoryLast24Hours(string name)
+        public IEnumerable<GroupedByHours> GetSensorHistoryLast24Hours(string name)
         {
             return _context.SensorValues
                 .Where(x => x.Sensor.Name == name)
                 .Where(x => DateTime.UtcNow - x.Timestamp < TimeSpan.FromHours(24))
                 .GroupBy(x => new { x.Timestamp.Hour, x.Timestamp.Minute })
-                .Select(x => new GroupedTempData
+                .Select(x => new GroupedByHours
                 {
-                    Timestamp = new DateTime(0, 0, 0, x.Key.Hour, x.Key.Minute, 0),
+                    Hour = x.Key.Hour,
                     Value = x.Average(y => y.Data)
                 }).ToList();
         }
