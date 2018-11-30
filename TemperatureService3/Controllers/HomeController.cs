@@ -33,6 +33,7 @@ namespace TemperatureService3.Controllers
             {
                 var vm = new SensorPageViewModel
                 {
+                    AllSensors = new IndexViewModel(_repository.GetAllSensorsWithValues()).Sensors,
                     Sensor = SensorViewModel.FromSensor(sensor),
                     Last24Hours = _repository.GetSensorHistoryLast24Hours(name),
                     LastWeek = _repository.GetSensorHistoryLastDays(name, 7),
