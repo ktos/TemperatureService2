@@ -44,7 +44,8 @@ namespace TemperatureService3.Repository
             return _context.SensorValues
                 .Where(x => x.Sensor.Name == name)
                 .Where(x => DateTime.UtcNow - x.Timestamp < TimeSpan.FromHours(24))
-                .GroupBy(x => new { x.Timestamp.Hour, x.Timestamp.Minute })
+                .OrderBy(x => x.Timestamp)
+                .GroupBy(x => new { x.Timestamp.Hour })
                 .Select(x => new GroupedByHours
                 {
                     Hour = x.Key.Hour,
