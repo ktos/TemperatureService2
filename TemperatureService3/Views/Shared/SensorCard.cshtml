@@ -11,7 +11,7 @@
         <div class="footer">
             <hr>
             <div class="stats">
-                <i class="fa fa-clock-o"></i> @Model.LastUpdated.Humanize(culture: new System.Globalization.CultureInfo("pl-PL"))
+                <span title="@Model.LastUpdated"><i class="fa fa-clock-o"></i> @Model.LastUpdated.Humanize(culture: new System.Globalization.CultureInfo("pl-PL"))</span>
                 <i class="fa @(Model.Status ? "fa-check-circle" : "fa-times-circle")" title="Status: @Model.Status"></i>
                 @{
                     if (Model.DifferenceFromPrevious == Difference.Lowering)
