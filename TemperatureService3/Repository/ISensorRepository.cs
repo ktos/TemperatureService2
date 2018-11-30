@@ -11,6 +11,10 @@ namespace TemperatureService3.Repository
 
         Sensor GetSensor(string name);
 
+        IEnumerable<GroupedByHours> GetSensorHistoryLast24Hours(string name);
+
+        IEnumerable<GroupedByDateTime> GetSensorHistoryLastDays(string name, int days);
+
         bool UpdateSensor(SensorDto sensorDto);
 
         bool AddSensorReading(SensorDto sensorDto);

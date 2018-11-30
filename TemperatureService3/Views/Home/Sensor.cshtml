@@ -1,4 +1,4 @@
-﻿@model TemperatureService3.ViewModels.SensorViewModel
+﻿@model TemperatureService3.ViewModels.SensorPageViewModel
 
 @{
     ViewData["Title"] = "Sensor";
@@ -23,53 +23,56 @@
         }*@
 }
 
-<h2>Sensor</h2>
+<div class="row">
+    <div class="col-md-6">
+        <partial name="SensorCard" model="Model.Sensor" />
+    </div>
 
-<div>
-    <h4>SensorViewModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Data)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastUpdated)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastUpdated)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-    </dl>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="content">
+                <p><strong>@Html.DisplayNameFor(model => model.Sensor.Name)</strong>: @Model.Sensor.Name</p>
+                <p><strong>@Html.DisplayNameFor(model => model.Sensor.Description)</strong>: @Model.Sensor.Description</p>
+                <p><strong>@Html.DisplayNameFor(model => model.Sensor.Id)</strong>: @Model.Sensor.Id</p>
+                <p><strong>@Html.DisplayNameFor(model => model.Sensor.Type)</strong>: @Model.Sensor.Type</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="content">
+                @foreach (var item in Model.Last24Hours)
+                {
+                    <p>@item.Hour @item.Value</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="content">
+                @foreach (var item in Model.LastWeek)
+                {
+                    <p>@item.Timestamp @item.Value</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="content">
+                @foreach (var item in Model.LastMonth)
+                {
+                    <p>@item.Timestamp @item.Value</p>
+                }
+            </div>
+        </div>
+    </div>
 </div>

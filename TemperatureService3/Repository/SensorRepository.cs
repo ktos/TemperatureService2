@@ -39,6 +39,42 @@ namespace TemperatureService3.Repository
             return _context.Sensors.Include(x => x.Values).FirstOrDefault(x => x.Name == name);
         }
 
+        public IEnumerable<GroupedByHours> GetSensorHistoryLast24Hours(string name)
+        {
+            var dt = DateTime.UtcNow.AddHours(-24);
+
+            var grouped = _context.SensorValues
+                .Where(x => x.Sensor.Name == name)
+                .Where(x => x.Timestamp > dt)
+                .OrderBy(x => x.Timestamp)
+                .GroupBy(x => new { x.Timestamp.Hour })
+                .ToList();
+
+            return grouped.Select(x => new GroupedByHours
+            {
+                Hour = x.Key.Hour,
+                Value = x.Average(y => y.Data)
+            }).ToList();
+        }
+
+        public IEnumerable<GroupedByDateTime> GetSensorHistoryLastDays(string name, int days)
+        {
+            var dt = DateTime.UtcNow.AddDays(-days);
+
+            var grouped = _context.SensorValues
+                .Where(x => x.Sensor.Name == name)
+                .Where(x => x.Timestamp > dt)
+                .OrderBy(x => x.Timestamp)
+                .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
+                .ToList();
+
+            return grouped.Select(x => new GroupedByDateTime
+            {
+                Timestamp = new DateTime(x.Key.Year, x.Key.Month, x.Key.Day),
+                Value = x.Average(y => y.Data)
+            }).OrderBy(x => x.Timestamp).ToList();
+        }
+
         public bool UpdateSensor(SensorDto sensorDto)
         {
             var sensor = GetSensor(sensorDto.Name);

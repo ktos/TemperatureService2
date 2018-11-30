@@ -22,32 +22,6 @@
 @foreach (var item in Model.Sensors)
 {
     <div class="col-md-3">
-        <div class="card">
-            <div class="header">
-                <h4 class="title">@item.Name</h4>
-                <p class="category">@item.Description</p>
-            </div>
-            <div class="content">
-                <h2 class="title">@item.Data.ToString("F1")°C</h2>
-
-                <div class="footer">
-                    <hr>
-                    <div class="stats">
-                        <span title="@item.LastUpdated"><i class="fa fa-clock-o"></i> @item.LastUpdated.Humanize(culture: new System.Globalization.CultureInfo("pl-PL"))</span>
-                        <i class="fa @(item.Status ? "fa-check-circle" : "fa-times-circle")" title="Status: @item.Status"></i>
-                        @{
-                            if (item.DifferenceFromPrevious == Difference.Lowering)
-                            {
-                                <i class="fa fa-level-down"></i>
-                            }
-                            else if (item.DifferenceFromPrevious == Difference.Rising)
-                            {
-                                <i class="fa fa-level-up"></i>
-                            }
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
+        <partial name="SensorCard" model="item" />
     </div>
 }

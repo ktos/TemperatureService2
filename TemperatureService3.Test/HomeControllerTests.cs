@@ -145,20 +145,28 @@ namespace TemperatureService3.Test
                 .Setup(repo => repo.GetSensor("outdoor"))
                 .Returns(mockSensor);
 
+            sensorsRepoMock
+                .Setup(repo => repo.GetSensorHistoryLast24Hours("outdoor"))
+                .Returns(new List<GroupedByHours>() {
+                    new GroupedByHours { Hour = now.Hour, Value = (1 + 2 + 3) / 3.0f }
+                });
+
             // Act
             var result = controller.Sensor("outdoor");
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var svm = Assert.IsAssignableFrom<ViewModels.SensorViewModel>(viewResult.ViewData.Model);
+            var svm = Assert.IsAssignableFrom<ViewModels.SensorPageViewModel>(viewResult.ViewData.Model);
 
-            Assert.True(svm.Status);
-            Assert.Equal("outdoor", svm.Name);
-            Assert.Equal("zewn¹trz", svm.Description);
-            Assert.Equal("1", svm.Id);
-            Assert.Equal(SensorType.Temperature, svm.Type);
-            Assert.Equal(1, svm.Data);
-            Assert.Equal(now, svm.LastUpdated);
+            Assert.True(svm.Sensor.Status);
+            Assert.Equal("outdoor", svm.Sensor.Name);
+            Assert.Equal("zewn¹trz", svm.Sensor.Description);
+            Assert.Equal("1", svm.Sensor.Id);
+            Assert.Equal(SensorType.Temperature, svm.Sensor.Type);
+            Assert.Equal(1, svm.Sensor.Data);
+            Assert.Equal(now, svm.Sensor.LastUpdated);
+            Assert.Single(svm.Last24Hours);
+            Assert.Equal((1 + 2 + 3) / 3.0f, svm.Last24Hours.First().Value);
         }
     }
 }
