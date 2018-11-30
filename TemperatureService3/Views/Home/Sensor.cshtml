@@ -23,53 +23,45 @@
         }*@
 }
 
-<h2>Sensor</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="header">
+                    <h4 class="title">@Model.Name</h4>
+                    <p class="category">@Model.Description</p>
+                </div>
+                <div class="content">
+                    <h2 class="title">@Model.Data.ToString("F1")°C</h2>
 
-<div>
-    <h4>SensorViewModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Data)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastUpdated)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastUpdated)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-    </dl>
-</div>
+                    <div class="footer">
+                        <hr>
+                        <div class="stats">
+                            <i class="fa fa-clock-o"></i> @Model.LastUpdated.Humanize(culture: new System.Globalization.CultureInfo("pl-PL"))
+                            <i class="fa @(Model.Status ? "fa-check-circle" : "fa-times-circle")" title="Status: @Model.Status"></i>
+                            @{
+                                if (Model.DifferenceFromPrevious == Difference.Lowering)
+                                {
+                                    <i class="fa fa-level-down"></i>
+                                }
+                                else if (Model.DifferenceFromPrevious == Difference.Rising)
+                                {
+                                    <i class="fa fa-level-up"></i>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="content">
+                    <p><strong>@Html.DisplayNameFor(model => model.Name)</strong>: @Model.Name</p>
+                    <p><strong>@Html.DisplayNameFor(model => model.Description)</strong>: @Model.Description</p>
+                    <p><strong>@Html.DisplayNameFor(model => model.Id)</strong>: @Model.Id</p>
+                    <p><strong>@Html.DisplayNameFor(model => model.Type)</strong>: @Model.Type</p>
+                </div>
+            </div>
+        </div>
+    </div>
