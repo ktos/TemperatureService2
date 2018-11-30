@@ -39,6 +39,19 @@ namespace TemperatureService3.Repository
             return _context.Sensors.Include(x => x.Values).FirstOrDefault(x => x.Name == name);
         }
 
+        public IEnumerable<GroupedTempData> GetSensorHistoryLast24Hours(string name)
+        {
+            return _context.SensorValues
+                .Where(x => x.Sensor.Name == name)
+                .Where(x => DateTime.UtcNow - x.Timestamp < TimeSpan.FromHours(24))
+                .GroupBy(x => new { x.Timestamp.Hour, x.Timestamp.Minute })
+                .Select(x => new GroupedTempData
+                {
+                    Timestamp = new DateTime(0, 0, 0, x.Key.Hour, x.Key.Minute, 0),
+                    Value = x.Average(y => y.Data)
+                }).ToList();
+        }
+
         public bool UpdateSensor(SensorDto sensorDto)
         {
             var sensor = GetSensor(sensorDto.Name);
