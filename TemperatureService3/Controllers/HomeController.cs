@@ -34,7 +34,9 @@ namespace TemperatureService3.Controllers
                 var vm = new SensorPageViewModel
                 {
                     Sensor = SensorViewModel.FromSensor(sensor),
-                    Last24Hours = _repository.GetSensorHistoryLast24Hours(name)
+                    Last24Hours = _repository.GetSensorHistoryLast24Hours(name),
+                    LastWeek = _repository.GetSensorHistoryLastDays(name, 7),
+                    LastMonth = _repository.GetSensorHistoryLastDays(name, 30)
                 };
 
                 return View(vm);

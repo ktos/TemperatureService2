@@ -41,11 +41,38 @@
 </div>
 
 <div class="row">
-    <div class="card">
-        @foreach (var item in Model.Last24Hours)
-        {
-            <p>@item.Hour</p>
-            <p>@item.Value</p>
-        }
+    <div class="col-md-6">
+        <div class="card">
+            <div class="content">
+                @foreach (var item in Model.Last24Hours)
+                {
+                    <p>@item.Hour @item.Value</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="content">
+                @foreach (var item in Model.LastWeek)
+                {
+                    <p>@item.Timestamp @item.Value</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="content">
+                @foreach (var item in Model.LastMonth)
+                {
+                    <p>@item.Timestamp @item.Value</p>
+                }
+            </div>
+        </div>
     </div>
 </div>
