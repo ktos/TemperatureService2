@@ -54,10 +54,39 @@
     <div class="col-md-12">
         <div class="card">
             <div class="content">
-                @foreach (var item in Model.LastMonth)
-                {
-                    <p>@item.Timestamp @item.Value</p>
-                }
+                <div class="header"><h3>Last Week</h3></div>
+                <canvas id="myChart" height="100"></canvas>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function (event) {
+                        var ctx = document.getElementById("myChart");
+                        var myChart = new Chart(ctx, {
+                            type: 'line', data: {
+                                labels: [
+                                    @foreach (var d in Model.LastMonth)
+                                    {
+                                        @Html.Raw(string.Format("\"{0:d}\",", d.Timestamp))
+                                    }], datasets: [{
+                                        label: 'Temperature',
+                                        fill: false,
+                                        borderColor: "rgba(75,192,192,1)",
+                                    backgroundColor: "rgba(75,192,192,0.4)",
+                                        data: [
+                                        @foreach (var d in Model.LastMonth)
+                                        {
+                                            @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", d.Value)
+                                            }
+                                        ]
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{ ticks: { beginAtZero: true } }]
+                                },
+                                legend: { display: false }
+                            }
+                        });
+
+                }); </script>
             </div>
         </div>
     </div>
