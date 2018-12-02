@@ -75,6 +75,24 @@ namespace TemperatureService3.Repository
             }).OrderBy(x => x.Timestamp).ToList();
         }
 
+        public IEnumerable<GroupedByDateTime> GetSensorHistoryLastYear(string name)
+        {
+            var dt = DateTime.UtcNow.AddDays(-365);
+
+            var grouped = _context.SensorValues
+                .Where(x => x.Sensor.Name == name)
+                .Where(x => x.Timestamp > dt)
+                .OrderBy(x => x.Timestamp)
+                .GroupBy(x => new { x.Timestamp.Month, x.Timestamp.Year })
+                .ToList();
+
+            return grouped.Select(x => new GroupedByDateTime
+            {
+                Timestamp = new DateTime(x.Key.Year, x.Key.Month, 1),
+                Value = x.Average(y => y.Data)
+            }).OrderBy(x => x.Timestamp).ToList();
+        }
+
         public bool UpdateSensor(SensorDto sensorDto)
         {
             var sensor = GetSensor(sensorDto.Name);

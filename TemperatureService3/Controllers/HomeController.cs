@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using TemperatureService3.Models;
 using TemperatureService3.Repository;
 using TemperatureService3.ViewModels;
@@ -37,7 +38,9 @@ namespace TemperatureService3.Controllers
                     Sensor = SensorViewModel.FromSensor(sensor),
                     Last24Hours = _repository.GetSensorHistoryLast24Hours(name),
                     LastWeek = _repository.GetSensorHistoryLastDays(name, 7),
-                    LastMonth = _repository.GetSensorHistoryLastDays(name, 30)
+                    LastMonth = _repository.GetSensorHistoryLastDays(name, 30),
+                    LastYear = _repository.GetSensorHistoryLastDays(name, 365),
+                    LastYearByMonth = _repository.GetSensorHistoryLastYear(name)
                 };
 
                 return View(vm);

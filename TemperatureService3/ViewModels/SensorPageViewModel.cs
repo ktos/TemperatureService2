@@ -13,5 +13,7 @@ namespace TemperatureService3.ViewModels
         public IEnumerable<GroupedByHours> Last24Hours { get; set; }
         public IEnumerable<GroupedByDateTime> LastWeek { get; set; }
         public IEnumerable<GroupedByDateTime> LastMonth { get; set; }
+        public IEnumerable<GroupedByDateTime> LastYearByMonth { get; set; }
+        public IEnumerable<GroupedByDateTime> LastYear { get; set; }
     }
 }

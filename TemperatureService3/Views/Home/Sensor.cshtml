@@ -63,6 +63,32 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="content">
+                <div class="header"><h3>Last 365 days (grouped by month)</h3></div>
+                <div class="content">
+                    <canvas id="lastyear" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="content">
+                <div class="header"><h3>Last 365 days</h3></div>
+                <div class="content">
+                    <canvas id="lastyear2" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function (event) {
     let lastweek = {
@@ -85,6 +111,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
         ]
     };
 
+    let lastyear = {
+        labels: [
+                @foreach (var item in Model.LastYearByMonth) { @Html.Raw(string.Format("\"{0:Y}\",", item.Timestamp)) }
+        ],
+        data: [
+                @foreach (var item in Model.LastYearByMonth)
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+        ]
+    };
+
+    let lastyear2 = {
+        labels: [
+                @foreach (var item in Model.LastYear) { @Html.Raw(string.Format("\"{0:d}\",", item.Timestamp)) }
+        ],
+        data: [
+                @foreach (var item in Model.LastYear)
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+        ]
+    };
+
     let last24 = {
         labels: [
                 @foreach (var item in Model.Last24Hours) { @Html.Raw(string.Format("\"{0:d}\",", item.Hour)) }
@@ -98,5 +144,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     createTemperatureGraph("lastweek", lastweek.labels, lastweek.data);
     createTemperatureGraph("lastmonth", lastmonth.labels, lastmonth.data);
     createTemperatureGraph("last24", last24.labels, last24.data);
+    createTemperatureGraph("lastyear", lastyear.labels, lastyear.data);
+    createTemperatureGraph("lastyear2", lastyear2.labels, lastyear2.data);
 });
 </script>
