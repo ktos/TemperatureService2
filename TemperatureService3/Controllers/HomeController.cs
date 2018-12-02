@@ -32,6 +32,8 @@ namespace TemperatureService3.Controllers
 
             if (sensor != null)
             {
+                ViewData["Title"] = sensor.Name;
+
                 var vm = new SensorPageViewModel
                 {
                     AllSensors = new IndexViewModel(_repository.GetAllSensorsWithValues()).Sensors,

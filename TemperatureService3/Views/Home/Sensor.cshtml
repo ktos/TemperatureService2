@@ -1,9 +1,5 @@
 ﻿@model TemperatureService3.ViewModels.SensorPageViewModel
 
-@{
-    ViewData["Title"] = "Sensor";
-}
-
 @section Menu
     {
     <partial name="Menu" model="@new MenuViewModel { Active = Model.Sensor, Sensors = Model.AllSensors }" />

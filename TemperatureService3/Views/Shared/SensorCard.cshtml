@@ -2,7 +2,7 @@
 
 <div class="card">
     <div class="header">
-        <h4 class="title">@Model.Name</h4>
+        <h4 class="title"><a asp-action="Sensor" asp-controller="Home" asp-route-name="@Model.Name">@Model.Name</a></h4>
         <p class="category">@Model.Description</p>
     </div>
     <div class="content">
@@ -11,7 +11,7 @@
         <div class="footer">
             <hr>
             <div class="stats">
-                <span title="@Model.LastUpdated"><i class="fa fa-clock-o"></i> @Model.LastUpdated.Humanize(culture: new System.Globalization.CultureInfo("pl-PL"))</span>
+                <span title="@Model.LastUpdated"><i class="fa fa-clock-o"></i> @Model.LastUpdated.Humanize()</span>
                 <i class="fa @(Model.Status ? "fa-check-circle" : "fa-times-circle")" title="Status: @Model.Status"></i>
                 @{
                     if (Model.DifferenceFromPrevious == Difference.Lowering)
