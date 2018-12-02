@@ -7,10 +7,4 @@ namespace TemperatureService3.Models
         public DateTime Timestamp { get; set; }
         public float Value { get; set; }
     }
-
-    public class GroupedByHours
-    {
-        public int Hour { get; set; }
-        public float Value { get; set; }
-    }
 }

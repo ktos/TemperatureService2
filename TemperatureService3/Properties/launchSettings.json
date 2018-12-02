@@ -12,8 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ConnectionStrings__DefaultConnection": "Server=localhost;Database=tempdata;Uid=root;Pwd=CcaQeCXgfurYmA58",
-        "ASPNETCORE_ENVIRONMENT": "Staging"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "TempHistory": {

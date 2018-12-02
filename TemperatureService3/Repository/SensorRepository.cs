@@ -39,22 +39,28 @@ namespace TemperatureService3.Repository
             return _context.Sensors.Include(x => x.Values).FirstOrDefault(x => x.Name == name);
         }
 
-        public IEnumerable<GroupedByHours> GetSensorHistoryLast24Hours(string name)
+        public IEnumerable<GroupedByDateTime> GetSensorHistoryLast24Hours(string name)
         {
             var dt = DateTime.UtcNow.AddHours(-24);
+            var now = DateTime.UtcNow;
 
             var grouped = _context.SensorValues
                 .Where(x => x.Sensor.Name == name)
                 .Where(x => x.Timestamp > dt)
-                .OrderBy(x => x.Timestamp)
-                .GroupBy(x => new { x.Timestamp.Hour })
+                .GroupBy(x => new { x.Timestamp.DayOfYear, x.Timestamp.Hour })
                 .ToList();
 
-            return grouped.Select(x => new GroupedByHours
+            return grouped.Select(x => new GroupedByDateTime
             {
-                Hour = x.Key.Hour,
+                Timestamp = DateTimeFromDayOfYear(x.Key.DayOfYear).AddHours(x.Key.Hour),
                 Value = x.Average(y => y.Data)
             }).ToList();
+        }
+
+        private DateTime DateTimeFromDayOfYear(int dayOfYear)
+        {
+            int year = DateTime.Now.Year;
+            return new DateTime(year, 1, 1).AddDays(dayOfYear - 1);
         }
 
         public IEnumerable<GroupedByDateTime> GetSensorHistoryLastDays(string name, int days)

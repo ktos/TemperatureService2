@@ -147,8 +147,8 @@ namespace TemperatureService3.Test
 
             sensorsRepoMock
                 .Setup(repo => repo.GetSensorHistoryLast24Hours("outdoor"))
-                .Returns(new List<GroupedByHours>() {
-                    new GroupedByHours { Hour = now.Hour, Value = (1 + 2 + 3) / 3.0f }
+                .Returns(new List<GroupedByDateTime>() {
+                    new GroupedByDateTime { Timestamp = now, Value = (1 + 2 + 3) / 3.0f }
                 });
 
             // Act

@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         ],
         data: [
                 @foreach (var item in Model.LastWeek)
-                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2},", item.Value) }
         ]
     };
 
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         ],
         data: [
                 @foreach (var item in Model.LastMonth)
-                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2},", item.Value) }
         ]
     };
 
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         ],
         data: [
                 @foreach (var item in Model.LastYearByMonth)
-                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2},", item.Value) }
         ]
     };
 
@@ -127,17 +127,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
         ],
         data: [
                 @foreach (var item in Model.LastYear)
-                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2},", item.Value) }
         ]
     };
 
     let last24 = {
         labels: [
-                @foreach (var item in Model.Last24Hours) { @Html.Raw(string.Format("\"{0:d}\",", item.Hour)) }
+                @foreach (var item in Model.Last24Hours) { @Html.Raw(string.Format("\"{0:t}\",", item.Timestamp)) }
         ],
         data: [
                 @foreach (var item in Model.Last24Hours)
-                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2},", item.Value) }
         ]
     };
 

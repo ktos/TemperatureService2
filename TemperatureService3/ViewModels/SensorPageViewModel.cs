@@ -10,7 +10,7 @@ namespace TemperatureService3.ViewModels
     {
         public IList<SensorViewModel> AllSensors { get; set; }
         public SensorViewModel Sensor { get; set; }
-        public IEnumerable<GroupedByHours> Last24Hours { get; set; }
+        public IEnumerable<GroupedByDateTime> Last24Hours { get; set; }
         public IEnumerable<GroupedByDateTime> LastWeek { get; set; }
         public IEnumerable<GroupedByDateTime> LastMonth { get; set; }
         public IEnumerable<GroupedByDateTime> LastYearByMonth { get; set; }
