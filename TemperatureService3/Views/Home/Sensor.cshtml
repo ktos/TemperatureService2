@@ -30,10 +30,8 @@
     <div class="col-md-6">
         <div class="card">
             <div class="content">
-                @foreach (var item in Model.Last24Hours)
-                {
-                    <p>@item.Hour @item.Value</p>
-                }
+                <div class="header"><h3>Last 24 hours</h3></div>
+                <canvas id="last24" height="100"></canvas>
             </div>
         </div>
     </div>
@@ -41,10 +39,8 @@
     <div class="col-md-6">
         <div class="card">
             <div class="content">
-                @foreach (var item in Model.LastWeek)
-                {
-                    <p>@item.Timestamp @item.Value</p>
-                }
+                <div class="header"><h3>Last Week</h3></div>
+                <canvas id="lastweek" height="100"></canvas>
             </div>
         </div>
     </div>
@@ -54,40 +50,47 @@
     <div class="col-md-12">
         <div class="card">
             <div class="content">
-                <div class="header"><h3>Last Week</h3></div>
-                <canvas id="myChart" height="100"></canvas>
-                <script>
-                    document.addEventListener("DOMContentLoaded", function (event) {
-                        var ctx = document.getElementById("myChart");
-                        var myChart = new Chart(ctx, {
-                            type: 'line', data: {
-                                labels: [
-                                    @foreach (var d in Model.LastMonth)
-                                    {
-                                        @Html.Raw(string.Format("\"{0:d}\",", d.Timestamp))
-                                    }], datasets: [{
-                                        label: 'Temperature',
-                                        fill: false,
-                                        borderColor: "rgba(75,192,192,1)",
-                                    backgroundColor: "rgba(75,192,192,0.4)",
-                                        data: [
-                                        @foreach (var d in Model.LastMonth)
-                                        {
-                                            @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", d.Value)
-                                            }
-                                        ]
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    yAxes: [{ ticks: { beginAtZero: true } }]
-                                },
-                                legend: { display: false }
-                            }
-                        });
-
-                }); </script>
+                <div class="header"><h3>Last Month</h3></div>
+                <canvas id="lastmonth" height="100"></canvas>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function (event) {
+    let lastweek = {
+        labels: [
+                @foreach (var item in Model.LastWeek) { @Html.Raw(string.Format("\"{0:d}\",", item.Timestamp)) }
+        ],
+        data: [
+                @foreach (var item in Model.LastWeek)
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+        ]
+    };
+
+    let lastmonth = {
+        labels: [
+                @foreach (var item in Model.LastMonth) { @Html.Raw(string.Format("\"{0:d}\",", item.Timestamp)) }
+        ],
+        data: [
+                @foreach (var item in Model.LastMonth)
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+        ]
+    };
+
+    let last24 = {
+        labels: [
+                @foreach (var item in Model.Last24Hours) { @Html.Raw(string.Format("\"{0:d}\",", item.Hour)) }
+        ],
+        data: [
+                @foreach (var item in Model.Last24Hours)
+                {  @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},", item.Value) }
+        ]
+    };
+
+    createTemperatureGraph("lastweek", lastweek.labels, lastweek.data);
+    createTemperatureGraph("lastmonth", lastmonth.labels, lastmonth.data);
+    createTemperatureGraph("last24", last24.labels, last24.data);
+});
+</script>
