@@ -49,6 +49,8 @@ namespace TemperatureService3
                 options.DefaultChallengeScheme = ApiKeyAuthenticationDefaults.AuthenticationScheme;
             })
                 .AddApiKeyAuthentication(options => options.ApiKey = Configuration["ApiKey"]);
+
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

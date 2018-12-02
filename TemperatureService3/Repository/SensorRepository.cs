@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace TemperatureService3.Repository
     public class SensorRepository : ISensorRepository
     {
         private readonly SensorsDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public SensorRepository(SensorsDbContext context)
+        public SensorRepository(SensorsDbContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _cache = memoryCache;
         }
 
         public IEnumerable<Sensor> GetAllSensors()
@@ -41,20 +44,30 @@ namespace TemperatureService3.Repository
 
         public IEnumerable<GroupedByDateTime> GetSensorHistoryLast24Hours(string name)
         {
-            var dt = DateTime.UtcNow.AddHours(-24);
-            var now = DateTime.UtcNow;
+            IEnumerable<GroupedByDateTime> result;
 
-            var grouped = _context.SensorValues
-                .Where(x => x.Sensor.Name == name)
-                .Where(x => x.Timestamp > dt)
-                .GroupBy(x => new { x.Timestamp.DayOfYear, x.Timestamp.Hour })
-                .ToList();
-
-            return grouped.Select(x => new GroupedByDateTime
+            string key = nameof(GetSensorHistoryLast24Hours) + name;
+            if (!_cache.TryGetValue(key, out result))
             {
-                Timestamp = DateTimeFromDayOfYear(x.Key.DayOfYear).AddHours(x.Key.Hour),
-                Value = x.Average(y => y.Data)
-            }).ToList();
+                var dt = DateTime.UtcNow.AddHours(-24);
+                var now = DateTime.UtcNow;
+
+                var grouped = _context.SensorValues
+                    .Where(x => x.Sensor.Name == name)
+                    .Where(x => x.Timestamp > dt)
+                    .GroupBy(x => new { x.Timestamp.DayOfYear, x.Timestamp.Hour })
+                    .ToList();
+
+                result = grouped.Select(x => new GroupedByDateTime
+                {
+                    Timestamp = DateTimeFromDayOfYear(x.Key.DayOfYear).AddHours(x.Key.Hour),
+                    Value = x.Average(y => y.Data)
+                }).ToList();
+
+                _cache.Set(key, result, DateTimeOffset.Now.AddMinutes(30));
+            }
+
+            return result;
         }
 
         private DateTime DateTimeFromDayOfYear(int dayOfYear)
@@ -65,38 +78,57 @@ namespace TemperatureService3.Repository
 
         public IEnumerable<GroupedByDateTime> GetSensorHistoryLastDays(string name, int days)
         {
-            var dt = DateTime.UtcNow.AddDays(-days);
+            IEnumerable<GroupedByDateTime> result;
 
-            var grouped = _context.SensorValues
-                .Where(x => x.Sensor.Name == name)
-                .Where(x => x.Timestamp > dt)
-                .OrderBy(x => x.Timestamp)
-                .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
-                .ToList();
-
-            return grouped.Select(x => new GroupedByDateTime
+            string key = nameof(GetSensorHistoryLastDays) + name + days;
+            if (!_cache.TryGetValue(key, out result))
             {
-                Timestamp = new DateTime(x.Key.Year, x.Key.Month, x.Key.Day),
-                Value = x.Average(y => y.Data)
-            }).OrderBy(x => x.Timestamp).ToList();
+                var dt = DateTime.UtcNow.AddDays(-days);
+
+                var grouped = _context.SensorValues
+                    .Where(x => x.Sensor.Name == name)
+                    .Where(x => x.Timestamp > dt)
+                    .OrderBy(x => x.Timestamp)
+                    .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
+                    .ToList();
+
+                result = grouped.Select(x => new GroupedByDateTime
+                {
+                    Timestamp = new DateTime(x.Key.Year, x.Key.Month, x.Key.Day),
+                    Value = x.Average(y => y.Data)
+                }).OrderBy(x => x.Timestamp).ToList();
+
+                _cache.Set(key, result, DateTimeOffset.Now.AddHours(2));
+            }
+
+            return result;
         }
 
         public IEnumerable<GroupedByDateTime> GetSensorHistoryLastYear(string name)
         {
-            var dt = DateTime.UtcNow.AddDays(-365);
+            IEnumerable<GroupedByDateTime> result;
 
-            var grouped = _context.SensorValues
-                .Where(x => x.Sensor.Name == name)
-                .Where(x => x.Timestamp > dt)
-                .OrderBy(x => x.Timestamp)
-                .GroupBy(x => new { x.Timestamp.Month, x.Timestamp.Year })
-                .ToList();
-
-            return grouped.Select(x => new GroupedByDateTime
+            string key = nameof(GetSensorHistoryLastYear) + name;
+            if (!_cache.TryGetValue(key, out result))
             {
-                Timestamp = new DateTime(x.Key.Year, x.Key.Month, 1),
-                Value = x.Average(y => y.Data)
-            }).OrderBy(x => x.Timestamp).ToList();
+                var dt = DateTime.UtcNow.AddDays(-365);
+
+                var grouped = _context.SensorValues
+                    .Where(x => x.Sensor.Name == name)
+                    .Where(x => x.Timestamp > dt)
+                    .OrderBy(x => x.Timestamp)
+                    .GroupBy(x => new { x.Timestamp.Month, x.Timestamp.Year })
+                    .ToList();
+
+                result = grouped.Select(x => new GroupedByDateTime
+                {
+                    Timestamp = new DateTime(x.Key.Year, x.Key.Month, 1),
+                    Value = x.Average(y => y.Data)
+                }).OrderBy(x => x.Timestamp).ToList();
+                _cache.Set(key, result, DateTimeOffset.Now.AddHours(2));
+            }
+
+            return result;
         }
 
         public bool UpdateSensor(SensorDto sensorDto)
