@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     let last24 = {
         labels: [
-                @foreach (var item in Model.Last24Hours) { @Html.Raw(string.Format("\"{0:t}\",", item.Timestamp)) }
+                @foreach (var item in Model.Last24Hours) { @Html.Raw(string.Format("\"{0:ddd H:mm}\",", item.Timestamp)) }
         ],
         data: [
                 @foreach (var item in Model.Last24Hours)
