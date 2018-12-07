@@ -8,7 +8,7 @@ namespace TemperatureService3.Test.Helpers
 {
     public class LabelsData
     {
-        public DateTime[] labels { get; set; }
+        public string[] labels { get; set; }
         public float[] data { get; set; }
     }
 
@@ -20,12 +20,10 @@ namespace TemperatureService3.Test.Helpers
             db.Sensors.AddRange(sensors);
             db.SaveChanges();
 
-            SensorValues = GenerateRandomSensorValues(sensors);
-            db.SensorValues.AddRange(SensorValues);
+            var values = GenerateSensorValues(sensors);
+            db.SensorValues.AddRange(values);
             db.SaveChanges();
         }
-
-        public static List<SensorValue> SensorValues;
 
         public static List<Sensor> GenerateSensors()
         {
@@ -36,16 +34,17 @@ namespace TemperatureService3.Test.Helpers
             };
         }
 
-        public static List<SensorValue> GenerateRandomSensorValues(IEnumerable<Sensor> sensors)
+        public static List<SensorValue> GenerateSensorValues(IEnumerable<Sensor> sensors)
         {
             var list = new List<SensorValue>();
-            var r = new Random();
+
+            var values = new float[] { 1.0f, 2.0f, 1.0f, 3.0f, 4.0f, 5.0f, 2.0f };
 
             foreach (var s in sensors)
             {
-                for (int i = 0; i < r.Next(10); i++)
+                for (int i = 0; i < 100; i++)
                 {
-                    list.Add(new SensorValue { Data = r.Next(100), Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 10) });
+                    list.Add(new SensorValue { Data = values[i % values.Length], Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 15) });
                 }
             }
 

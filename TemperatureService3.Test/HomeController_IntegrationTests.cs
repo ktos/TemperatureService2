@@ -105,7 +105,7 @@ namespace TemperatureService3.Test
 
         [Theory]
         [InlineData("/outdoor.html")]
-        public async Task Get_SingleSensorWithAllValues(string url)
+        public async Task Get_SingleSensorHistoryLastWeek(string url)
         {
             // Arrange
             var client = _factory.CreateClient();
@@ -118,8 +118,63 @@ namespace TemperatureService3.Test
 
             var resp = await response.Content.ReadAsStringAsync();
 
-            var lastweekJson = ExtractJson(resp, "lastweek");
-            var lastweekHistory = JsonConvert.DeserializeObject<LabelsData>(lastweekJson);
+            var lastJson = ExtractJson(resp, "lastweek");
+            var lasthistory = JsonConvert.DeserializeObject<LabelsData>(lastJson);
+
+            Assert.Equal(2, lasthistory.labels.Length);
+            Assert.Equal(2, lasthistory.data.Length);
+            Assert.Equal(2.56f, lasthistory.data[0]);
+            Assert.Equal(2.54f, lasthistory.data[1]);
+            Assert.Equal(DateTime.Now.AddDays(-1).DayOfYear, DateTime.Parse(lasthistory.labels[0]).DayOfYear);
+            Assert.Equal(DateTime.Now.DayOfYear, DateTime.Parse(lasthistory.labels[1]).DayOfYear);
+        }
+
+        [Theory]
+        [InlineData("/outdoor.html")]
+        public async Task Get_SingleSensorHistoryLastMonth(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var resp = await response.Content.ReadAsStringAsync();
+
+            var lastJson = ExtractJson(resp, "lastmonth");
+            var lasthistory = JsonConvert.DeserializeObject<LabelsData>(lastJson);
+
+            Assert.Equal(2, lasthistory.labels.Length);
+            Assert.Equal(2, lasthistory.data.Length);
+            Assert.Equal(2.56f, lasthistory.data[0]);
+            Assert.Equal(2.54f, lasthistory.data[1]);
+            Assert.Equal(DateTime.Now.AddDays(-1).DayOfYear, DateTime.Parse(lasthistory.labels[0]).DayOfYear);
+            Assert.Equal(DateTime.Now.DayOfYear, DateTime.Parse(lasthistory.labels[1]).DayOfYear);
+        }
+
+        [Theory]
+        [InlineData("/outdoor.html")]
+        public async Task Get_SingleSensorHistoryLast24(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var resp = await response.Content.ReadAsStringAsync();
+
+            var lastJson = ExtractJson(resp, "last24");
+            var lasthistory = JsonConvert.DeserializeObject<LabelsData>(lastJson);
+
+            Assert.Equal(25, lasthistory.labels.Length);
+            Assert.Equal(25, lasthistory.data.Length);
         }
 
         private string ExtractJson(string data, string objstart)
