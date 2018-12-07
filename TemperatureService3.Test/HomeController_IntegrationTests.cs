@@ -222,8 +222,8 @@ namespace TemperatureService3.Test
             var lastJson = ExtractJson(resp, "last24");
             var lasthistory = JsonConvert.DeserializeObject<LabelsData>(lastJson);
 
-            Assert.Equal(25, lasthistory.labels.Length);
-            Assert.Equal(25, lasthistory.data.Length);
+            Assert.InRange(lasthistory.labels.Length, 23, 26);
+            Assert.InRange(lasthistory.data.Length, 23, 26);
         }
 
         private string ExtractJson(string data, string objstart)
