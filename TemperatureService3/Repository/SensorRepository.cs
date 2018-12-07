@@ -92,6 +92,7 @@ namespace TemperatureService3.Repository
                     .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
                     .ToList();
 
+                // workaround for https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/644
                 result = grouped.Select(x => new GroupedByDateTime
                 {
                     Timestamp = new DateTime(x.Key.Year, x.Key.Month, x.Key.Day),

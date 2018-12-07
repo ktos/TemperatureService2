@@ -47,7 +47,7 @@ namespace TemperatureService3.Test
         [Fact]
         public void SensorViewModel_PositiveData()
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
 
             var sensor = new Sensor
             {
@@ -70,7 +70,7 @@ namespace TemperatureService3.Test
             Assert.Equal("1", svm.Id);
             Assert.Equal(SensorType.Temperature, svm.Type);
             Assert.Equal(1, svm.Data);
-            Assert.Equal(now, svm.LastUpdated.ToUniversalTime());
+            Assert.Equal(now, svm.LastUpdated);
         }
 
         [Fact]
