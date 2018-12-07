@@ -124,7 +124,7 @@ namespace TemperatureService3.Test
         [Fact]
         public void Index_ReturnsSingleSensor()
         {
-            var now = DateTime.UtcNow;
+            var utcNow = DateTime.UtcNow;
 
             // Arrange
             var mockSensor = new Sensor
@@ -135,9 +135,9 @@ namespace TemperatureService3.Test
                 Type = SensorType.Temperature,
                 Values = new List<SensorValue>
                 {
-                    new SensorValue {  Data = 1, Id = 1, Timestamp = now },
-                    new SensorValue {  Data = 2, Id = 2, Timestamp = now - TimeSpan.FromMinutes(15) },
-                    new SensorValue {  Data = 3, Id = 3, Timestamp = now - TimeSpan.FromMinutes(30) }
+                    new SensorValue {  Data = 1, Id = 1, Timestamp = utcNow },
+                    new SensorValue {  Data = 2, Id = 2, Timestamp = utcNow - TimeSpan.FromMinutes(15) },
+                    new SensorValue {  Data = 3, Id = 3, Timestamp = utcNow - TimeSpan.FromMinutes(30) }
                 }
             };
 
@@ -148,7 +148,7 @@ namespace TemperatureService3.Test
             sensorsRepoMock
                 .Setup(repo => repo.GetSensorHistoryLast24Hours("outdoor"))
                 .Returns(new List<GroupedByDateTime>() {
-                    new GroupedByDateTime { Timestamp = now, Value = (1 + 2 + 3) / 3.0f }
+                    new GroupedByDateTime { Timestamp = utcNow, Value = (1 + 2 + 3) / 3.0f }
                 });
 
             // Act
@@ -164,7 +164,7 @@ namespace TemperatureService3.Test
             Assert.Equal("1", svm.Sensor.Id);
             Assert.Equal(SensorType.Temperature, svm.Sensor.Type);
             Assert.Equal(1, svm.Sensor.Data);
-            Assert.Equal(now, svm.Sensor.LastUpdated);
+            Assert.Equal(utcNow, svm.Sensor.LastUpdated.ToUniversalTime());
             Assert.Single(svm.Last24Hours);
             Assert.Equal((1 + 2 + 3) / 3.0f, svm.Last24Hours.First().Value);
         }

@@ -55,7 +55,7 @@ namespace TemperatureService3.Repository
                 var grouped = _context.SensorValues
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
-                    .GroupBy(x => new { x.Timestamp.DayOfYear, x.Timestamp.Hour })
+                    .GroupBy(x => new { x.Timestamp.ToLocalTime().DayOfYear, x.Timestamp.ToLocalTime().Hour })
                     .ToList();
 
                 result = grouped.Select(x => new GroupedByDateTime

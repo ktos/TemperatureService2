@@ -70,7 +70,7 @@ namespace TemperatureService3.Test
             Assert.Equal("1", svm.Id);
             Assert.Equal(SensorType.Temperature, svm.Type);
             Assert.Equal(1, svm.Data);
-            Assert.Equal(now, svm.LastUpdated);
+            Assert.Equal(now, svm.LastUpdated.ToUniversalTime());
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace TemperatureService3.Test
             Assert.Equal("1", svm.Id);
             Assert.Equal(SensorType.Temperature, svm.Type);
             Assert.Equal(1, svm.Data);
-            Assert.Equal(now - TimeSpan.FromMinutes(60), svm.LastUpdated);
+            Assert.Equal(now - TimeSpan.FromMinutes(60), svm.LastUpdated.ToUniversalTime());
         }
 
         [Fact]

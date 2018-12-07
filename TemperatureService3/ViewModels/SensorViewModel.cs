@@ -85,7 +85,7 @@ namespace TemperatureService3.ViewModels
                 if (newestValue != null)
                 {
                     result.Data = newestValue.Data;
-                    result.LastUpdated = newestValue.Timestamp;
+                    result.LastUpdated = newestValue.Timestamp.ToLocalTime();
                     result.Status = DateTime.UtcNow - newestValue.Timestamp < TimeSpan.FromMinutes(60);
 
                     if (orderedValues.Count() > 1)
