@@ -95,7 +95,7 @@ namespace TemperatureService3.Test
             var text = xd.SelectNodes("/tile/visual/binding[@template=\"TileWide\"]/text[@hint-style=\"captionSubtle\"]").Item(0).InnerText;
             text = text.Replace("last update: ", "");
 
-            var lastUpdated = DateTime.Parse(text);
+            var lastUpdated = DateTime.Parse(text).ToUniversalTime();
             var wnsExpires = DateTime.Parse(response.Headers.GetValues("X-WNS-Expires").First()).ToUniversalTime();
 
             Assert.Equal(lastUpdated.AddMinutes(60), wnsExpires);
@@ -605,7 +605,7 @@ namespace TemperatureService3.Test
 
             Assert.Equal(data, svm.Data.ToString("F2", CultureInfo.InvariantCulture));
 
-            var timeDiff = svm.LastUpdated - now;
+            var timeDiff = svm.LastUpdated.ToUniversalTime() - now;
 
             Assert.InRange(timeDiff.TotalMilliseconds, -1000, 1000);
             Assert.Equal("application/json; charset=utf-8",

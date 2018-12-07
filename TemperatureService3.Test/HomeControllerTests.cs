@@ -124,7 +124,7 @@ namespace TemperatureService3.Test
         [Fact]
         public void Index_ReturnsSingleSensor()
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
 
             // Arrange
             var mockSensor = new Sensor

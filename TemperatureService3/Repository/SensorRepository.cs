@@ -55,7 +55,7 @@ namespace TemperatureService3.Repository
                 var grouped = _context.SensorValues
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
-                    .GroupBy(x => new { x.Timestamp.DayOfYear, x.Timestamp.Hour })
+                    .GroupBy(x => new { x.Timestamp.ToLocalTime().DayOfYear, x.Timestamp.ToLocalTime().Hour })
                     .ToList();
 
                 result = grouped.Select(x => new GroupedByDateTime
@@ -92,6 +92,7 @@ namespace TemperatureService3.Repository
                     .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
                     .ToList();
 
+                // workaround for https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/644
                 result = grouped.Select(x => new GroupedByDateTime
                 {
                     Timestamp = new DateTime(x.Key.Year, x.Key.Month, x.Key.Day),
