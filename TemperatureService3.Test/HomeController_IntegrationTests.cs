@@ -104,6 +104,39 @@ namespace TemperatureService3.Test
         }
 
         [Theory]
+        [InlineData("/outdoor.html")]
+        public async Task Get_SingleSensorWithAllValues(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var resp = await response.Content.ReadAsStringAsync();
+
+            var lastweekJson = ExtractJson(resp, "lastweek");
+            var lastweekHistory = JsonConvert.DeserializeObject<LabelsData>(lastweekJson);
+        }
+
+        private string ExtractJson(string data, string objstart)
+        {
+            var search = $"let {objstart} = {{";
+            var start = data.IndexOf(search);
+            if (start == -1)
+                return string.Empty;
+
+            var stop = data.IndexOf("};", start);
+
+            var result = data.Substring(start, stop - start);
+
+            return result.Substring(search.Length - 1) + "}";
+        }
+
+        [Theory]
         [InlineData("outdoor")]
         [InlineData("indoor")]
         public async Task Put_SensorDataApiKeyInBody(string sensor)
