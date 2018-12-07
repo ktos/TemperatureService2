@@ -38,13 +38,11 @@ namespace TemperatureService3.Test.Helpers
         {
             var list = new List<SensorValue>();
 
-            var values = new float[] { 1.0f, 2.0f, 1.0f, 3.0f, 4.0f, 5.0f, 2.0f };
-
             foreach (var s in sensors)
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    list.Add(new SensorValue { Data = values[i % values.Length], Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 15) });
+                    list.Add(new SensorValue { Data = 3.14f, Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 15) });
                 }
             }
 

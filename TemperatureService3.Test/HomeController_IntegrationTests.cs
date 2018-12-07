@@ -123,8 +123,8 @@ namespace TemperatureService3.Test
 
             Assert.Equal(2, lasthistory.labels.Length);
             Assert.Equal(2, lasthistory.data.Length);
-            Assert.Equal(2.56f, lasthistory.data[0]);
-            Assert.Equal(2.54f, lasthistory.data[1]);
+            Assert.InRange(lasthistory.data[0], 3.0f, 3.5f);
+            Assert.InRange(lasthistory.data[1], 3.0f, 3.5f);
             Assert.Equal(DateTime.Now.AddDays(-1).DayOfYear, DateTime.Parse(lasthistory.labels[0]).DayOfYear);
             Assert.Equal(DateTime.Now.DayOfYear, DateTime.Parse(lasthistory.labels[1]).DayOfYear);
         }
@@ -149,10 +149,59 @@ namespace TemperatureService3.Test
 
             Assert.Equal(2, lasthistory.labels.Length);
             Assert.Equal(2, lasthistory.data.Length);
-            Assert.Equal(2.56f, lasthistory.data[0]);
-            Assert.Equal(2.54f, lasthistory.data[1]);
+            Assert.InRange(lasthistory.data[0], 3.0f, 3.5f);
+            Assert.InRange(lasthistory.data[1], 3.0f, 3.5f);
             Assert.Equal(DateTime.Now.AddDays(-1).DayOfYear, DateTime.Parse(lasthistory.labels[0]).DayOfYear);
             Assert.Equal(DateTime.Now.DayOfYear, DateTime.Parse(lasthistory.labels[1]).DayOfYear);
+        }
+
+        [Theory]
+        [InlineData("/outdoor.html")]
+        public async Task Get_SingleSensorHistoryLastYear2(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var resp = await response.Content.ReadAsStringAsync();
+
+            var lastJson = ExtractJson(resp, "lastyear2");
+            var lasthistory = JsonConvert.DeserializeObject<LabelsData>(lastJson);
+
+            Assert.Equal(2, lasthistory.labels.Length);
+            Assert.Equal(2, lasthistory.data.Length);
+            Assert.InRange(lasthistory.data[0], 3.0f, 3.5f);
+            Assert.InRange(lasthistory.data[1], 3.0f, 3.5f);
+            Assert.Equal(DateTime.Now.AddDays(-1).DayOfYear, DateTime.Parse(lasthistory.labels[0]).DayOfYear);
+            Assert.Equal(DateTime.Now.DayOfYear, DateTime.Parse(lasthistory.labels[1]).DayOfYear);
+        }
+
+        [Theory]
+        [InlineData("/outdoor.html")]
+        public async Task Get_SingleSensorHistoryLastYear(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var resp = await response.Content.ReadAsStringAsync();
+
+            var lastJson = ExtractJson(resp, "lastyear");
+            var lasthistory = JsonConvert.DeserializeObject<LabelsData>(lastJson);
+
+            Assert.Single(lasthistory.labels);
+            Assert.Single(lasthistory.data);
+            Assert.InRange(lasthistory.data[0], 3.0f, 3.5f);
         }
 
         [Theory]
