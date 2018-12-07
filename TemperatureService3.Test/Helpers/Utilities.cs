@@ -6,19 +6,26 @@ using TemperatureService3.Models;
 
 namespace TemperatureService3.Test.Helpers
 {
+    public class LabelsData
+    {
+        public string[] labels { get; set; }
+        public float[] data { get; set; }
+    }
+
     public static class Utilities
     {
         public static void InitializeDbForTests(SensorsDbContext db)
         {
-            List<Sensor> sensors = GetSensors();
+            List<Sensor> sensors = GenerateSensors();
             db.Sensors.AddRange(sensors);
             db.SaveChanges();
 
-            db.SensorValues.AddRange(GetSensorValues(sensors));
+            var values = GenerateSensorValues(sensors);
+            db.SensorValues.AddRange(values);
             db.SaveChanges();
         }
 
-        public static List<Sensor> GetSensors()
+        public static List<Sensor> GenerateSensors()
         {
             return new List<Sensor>()
             {
@@ -27,16 +34,15 @@ namespace TemperatureService3.Test.Helpers
             };
         }
 
-        public static List<SensorValue> GetSensorValues(IEnumerable<Sensor> sensors)
+        public static List<SensorValue> GenerateSensorValues(IEnumerable<Sensor> sensors)
         {
             var list = new List<SensorValue>();
-            var r = new Random();
 
             foreach (var s in sensors)
             {
-                for (int i = 0; i < r.Next(10); i++)
+                for (int i = 0; i < 100; i++)
                 {
-                    list.Add(new SensorValue { Data = r.Next(100), Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 10) });
+                    list.Add(new SensorValue { Data = 3.14f, Sensor = s, Timestamp = DateTime.UtcNow - TimeSpan.FromMinutes(i * 15) });
                 }
             }
 
