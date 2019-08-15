@@ -135,8 +135,8 @@ namespace TemperatureService3.Repository
         public bool UpdateSensor(SensorDto sensorDto)
         {
             var sensor = GetSensor(sensorDto.Name);
-            if (sensorDto.Description != sensor.Description) sensor.Description = sensorDto.Description;
-            if (sensorDto.Id != sensor.InternalId) sensor.InternalId = sensorDto.Id;
+            if (sensorDto.Description != null && sensorDto.Description != sensor.Description) sensor.Description = sensorDto.Description;
+            if (sensorDto.Id != null && sensorDto.Id != sensor.InternalId) sensor.InternalId = sensorDto.Id;
             if (sensorDto.Type != sensor.Type) sensor.Type = sensorDto.Type;
             _context.SaveChanges();
 
