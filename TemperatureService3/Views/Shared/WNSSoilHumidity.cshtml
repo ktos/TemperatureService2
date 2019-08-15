@@ -1,0 +1,24 @@
+﻿@model TemperatureService3.ViewModels.SensorViewModel
+@{
+    Layout = null;
+}
+<tile>
+    <visual>
+
+        <binding template="TileSmall" hint-textStacking="center">
+            <text hint-style="base" hint-align="center">@Model.Data.ToString("F1")</text>
+            <text hint-style="captionSubtle">@Model.Name</text>
+        </binding>
+
+        <binding template="TileMedium" branding="logo">
+            <text hint-style="subtitle">@Model.Data.ToString("F1")</text>
+            <text hint-style="bodySubtle">@Model.Name</text>
+        </binding>
+
+        <binding template="TileWide" branding="logo">
+            <text hint-style="subtitle">@Model.Data.ToString("F1")</text>
+            <text hint-style="bodySubtle">@Model.Name</text>
+            <text hint-style="captionSubtle">last update: @Model.LastUpdated.ToShortDateString() @Model.LastUpdated.ToLongTimeString()</text>
+        </binding>
+    </visual>
+</tile>
