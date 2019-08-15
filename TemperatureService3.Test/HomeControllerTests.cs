@@ -31,7 +31,7 @@ namespace TemperatureService3.Test
             var mockTempdataList = new List<Sensor>
             {
                 new Sensor { Name = "outdoor", Description = "zewnêtrzny", InternalId = "1", Type = SensorType.Temperature },
-                new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.Temperature }
+                new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.SoilHumidity }
             };
 
             sensorsRepoMock
@@ -56,7 +56,7 @@ namespace TemperatureService3.Test
             var mockTempdataList = new List<Sensor>
             {
                 new Sensor { Name = "outdoor", Description = "zewnêtrzny", InternalId = "1", Type = SensorType.Temperature, IsHidden = true },
-                new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.Temperature }
+                new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.SoilHumidity }
             };
 
             sensorsRepoMock
@@ -82,7 +82,7 @@ namespace TemperatureService3.Test
             {
                 new Sensor { Name = "outdoor", Description = "zewnêtrzny", InternalId = "1", Type = SensorType.Temperature },
                 new Sensor { Name = "indoor", Description = "wewnêtrzny", InternalId = "2", Type = SensorType.Temperature },
-                new Sensor { Name = "indoor2", Description = "wewnêtrzny2", InternalId = "3", Type = SensorType.Temperature }
+                new Sensor { Name = "indoor2", Description = "wewnêtrzny2", InternalId = "3", Type = SensorType.SoilHumidity }
             };
 
             mockSensors[0].Values = new List<SensorValue>
