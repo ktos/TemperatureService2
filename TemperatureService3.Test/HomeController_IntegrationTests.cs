@@ -598,6 +598,8 @@ namespace TemperatureService3.Test
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
             Assert.Equal(9.0f, svm.Data);
+            Assert.NotNull(svm.Description);
+            Assert.NotEqual(string.Empty, svm.Description);
 
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
@@ -642,6 +644,8 @@ namespace TemperatureService3.Test
             Assert.InRange(timeDiff.TotalMilliseconds, -1000, 1000);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
+            Assert.NotNull(svm.Description);
+            Assert.NotEqual(string.Empty, svm.Description);
         }
     }
 }
