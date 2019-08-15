@@ -6,7 +6,14 @@
         <p class="category">@Model.Description</p>
     </div>
     <div class="content">
-        <h2 class="title">@Model.Data.ToString("F1")°C</h2>
+        @if (Model.Type == SensorType.Temperature)
+        {
+            <h2 class="title">@Model.Data.ToString("F1")°C</h2>
+        }
+        else
+        {
+            <h2 class="title">@Model.Data.ToString("F1")</h2>
+        }
 
         <div class="footer">
             <hr>
