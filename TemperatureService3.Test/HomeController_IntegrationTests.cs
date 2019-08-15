@@ -505,6 +505,86 @@ namespace TemperatureService3.Test
         }
 
         [Theory]
+        [InlineData("indoor")]
+        public async Task Put_UpdateSensorMetadata(string sensor)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var url = $"/{sensor}";
+            var url2 = $"/{sensor}.json";
+
+            // get old data
+            var response = await client.GetAsync(url2).ConfigureAwait(false);
+            var old = JsonConvert.DeserializeObject<SensorDto>(await response.Content.ReadAsStringAsync());
+
+            // update data
+            string randomId = Utilities.RandomString(5);
+            string randomDescription = Utilities.RandomString(20);
+
+            var dto = new SensorDto { Id = randomId, Description = randomDescription };
+            var content = JsonConvert.SerializeObject(dto);
+
+            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
+
+            response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+
+            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomDescription, svm.Description);
+            Assert.NotEqual(svm.Description, old.Description);
+            Assert.NotEqual(svm.Id, old.Id);
+
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
+        [InlineData("indoor")]
+        public async Task Post_UpdateSensorMetadata(string sensor)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var url = $"/{sensor}";
+            var url2 = $"/{sensor}.json";
+
+            // get old data
+            var response = await client.GetAsync(url2).ConfigureAwait(false);
+            var old = JsonConvert.DeserializeObject<SensorDto>(await response.Content.ReadAsStringAsync());
+
+            // update data
+            string randomId = Utilities.RandomString(5);
+            string randomDescription = Utilities.RandomString(20);
+
+            var dto = new SensorDto { Id = randomId, Description = randomDescription };
+            var content = JsonConvert.SerializeObject(dto);
+
+            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
+
+            response = await client.PostAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
+
+            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomDescription, svm.Description);
+            Assert.NotEqual(svm.Description, old.Description);
+            Assert.NotEqual(svm.Id, old.Id);
+
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
         [InlineData("outdoor")]
         public async Task Put_UpdateSensorWithData127(string sensor)
         {
@@ -600,6 +680,8 @@ namespace TemperatureService3.Test
             Assert.Equal(9.0f, svm.Data);
             Assert.NotNull(svm.Description);
             Assert.NotEqual(string.Empty, svm.Description);
+            Assert.NotNull(svm.Id);
+            Assert.NotEqual(string.Empty, svm.Id);
 
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
@@ -646,6 +728,8 @@ namespace TemperatureService3.Test
                 response.Content.Headers.ContentType.ToString());
             Assert.NotNull(svm.Description);
             Assert.NotEqual(string.Empty, svm.Description);
+            Assert.NotNull(svm.Id);
+            Assert.NotEqual(string.Empty, svm.Id);
         }
     }
 }
