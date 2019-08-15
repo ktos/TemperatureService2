@@ -137,10 +137,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
         ]
     };
 
-    createTemperatureGraph("lastweek", lastweek.labels, lastweek.data);
-    createTemperatureGraph("lastmonth", lastmonth.labels, lastmonth.data);
-    createTemperatureGraph("last24", last24.labels, last24.data);
-    createTemperatureGraph("lastyear", lastyear.labels, lastyear.data);
-    createTemperatureGraph("lastyear2", lastyear2.labels, lastyear2.data);
+    createTemperatureGraph("lastweek", lastweek.labels, lastweek.data, "@Model.Sensor.Type");
+    createTemperatureGraph("lastmonth", lastmonth.labels, lastmonth.data, "@Model.Sensor.Type");
+    createTemperatureGraph("last24", last24.labels, last24.data, "@Model.Sensor.Type");
+    createTemperatureGraph("lastyear", lastyear.labels, lastyear.data, "@Model.Sensor.Type");
+    createTemperatureGraph("lastyear2", lastyear2.labels, lastyear2.data, "@Model.Sensor.Type");
 });
 </script>
