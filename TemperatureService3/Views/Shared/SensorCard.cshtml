@@ -3,24 +3,38 @@
 <div class="card">
     <div class="header">
         <h4 class="title"><a asp-action="Sensor" asp-controller="Home" asp-route-name="@Model.Name">@Model.Name</a></h4>
-        <p class="category">@Model.Description</p>
+        @if (Model.Type == SensorType.Temperature)
+        {
+            <p class="category"><i class="fa fa-thermometer-half"></i> @Model.Description</p>
+        }
+        else
+        {
+            <p class="category"><i class="fa fa-seedling"></i> @Model.Description</p>
+        }
     </div>
     <div class="content">
-        <h2 class="title">@Model.Data.ToString("F1")°C</h2>
+        @if (Model.Type == SensorType.Temperature)
+        {
+            <h2 class="title">@Model.Data.ToString("F1")°C</h2>
+        }
+        else
+        {
+            <h2 class="title">@Model.Data.ToString("F0")</h2>
+        }
 
         <div class="footer">
             <hr>
             <div class="stats">
-                <span title="@Model.LastUpdated"><i class="fa fa-clock-o"></i> @Model.LastUpdated.Humanize()</span>
+                <span title="@Model.LastUpdated"><i class="far fa-clock"></i> @Model.LastUpdated.Humanize()</span>
                 <i class="fa @(Model.Status ? "fa-check-circle" : "fa-times-circle")" title="Status: @Model.Status"></i>
                 @{
                     if (Model.DifferenceFromPrevious == Difference.Lowering)
                     {
-                        <i class="fa fa-level-down"></i>
+                        <i class="fa fa-level-down-alt"></i>
                     }
                     else if (Model.DifferenceFromPrevious == Difference.Rising)
                     {
-                        <i class="fa fa-level-up"></i>
+                        <i class="fa fa-level-up-alt"></i>
                     }
                 }
             </div>

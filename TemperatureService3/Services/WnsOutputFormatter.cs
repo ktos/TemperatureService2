@@ -63,7 +63,9 @@ namespace TemperatureService3.Services
 
             using (var sw = new StringWriter())
             {
-                string viewName = "Sensor_WNS";
+                var svm = context.Object as SensorViewModel;
+
+                string viewName = "WNS" + svm.Type.ToString();
                 var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
 
                 if (viewResult.View == null)

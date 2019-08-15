@@ -30,7 +30,8 @@ namespace TemperatureService3.Test.Helpers
             return new List<Sensor>()
             {
                 new Sensor { Name = "outdoor", Description = "zewnętrzny", InternalId = "1", Type = SensorType.Temperature },
-                new Sensor { Name = "indoor", Description = "wewnętrzny", InternalId = "2", Type = SensorType.Temperature }
+                new Sensor { Name = "indoor", Description = "wewnętrzny", InternalId = "2", Type = SensorType.Temperature },
+                new Sensor { Name = "soil", Description = "wilgotność gleby", InternalId = "3", Type = SensorType.SoilHumidity }
             };
         }
 

@@ -8,7 +8,8 @@ namespace TemperatureService3.Models
     /// </summary>
     public enum SensorType
     {
-        Temperature
+        Temperature,
+        SoilHumidity
     }
 
     /// <summary>

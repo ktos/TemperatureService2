@@ -94,10 +94,42 @@ namespace TemperatureService3.Test
 
             var text = xd.SelectNodes("/tile/visual/binding[@template=\"TileWide\"]/text[@hint-style=\"captionSubtle\"]").Item(0).InnerText;
             text = text.Replace("last update: ", "");
+            var value = xd.SelectNodes("/tile/visual/binding[@template=\"TileWide\"]/text[@hint-style=\"subtitle\"]").Item(0).InnerText;
 
             var lastUpdated = DateTime.Parse(text).ToUniversalTime();
             var wnsExpires = DateTime.Parse(response.Headers.GetValues("X-WNS-Expires").First()).ToUniversalTime();
 
+            Assert.Contains("°C", value);
+            Assert.Equal(lastUpdated.AddMinutes(60), wnsExpires);
+            Assert.Equal("application/xml; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
+        [InlineData("/soil.wns")]
+        public async Task Get_SensorReturn200AndCorrectWNSFormat(string url)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync(url).ConfigureAwait(false);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+            XmlDocument xd = new XmlDocument();
+            xd.LoadXml(await response.Content.ReadAsStringAsync());
+
+            var text = xd.SelectNodes("/tile/visual/binding[@template=\"TileWide\"]/text[@hint-style=\"captionSubtle\"]").Item(0).InnerText;
+            var value = xd.SelectNodes("/tile/visual/binding[@template=\"TileWide\"]/text[@hint-style=\"subtitle\"]").Item(0).InnerText;
+
+            text = text.Replace("last update: ", "");
+
+            var lastUpdated = DateTime.Parse(text).ToUniversalTime();
+            var wnsExpires = DateTime.Parse(response.Headers.GetValues("X-WNS-Expires").First()).ToUniversalTime();
+
+            Assert.DoesNotContain("°C", value);
             Assert.Equal(lastUpdated.AddMinutes(60), wnsExpires);
             Assert.Equal("application/xml; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
