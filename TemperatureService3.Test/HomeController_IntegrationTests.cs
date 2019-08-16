@@ -29,13 +29,8 @@ namespace TemperatureService3.Test
         [InlineData("/outdoor")]
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
+            var response = await DoGet(url);
 
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
-
-            // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             Assert.Equal("text/html; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
@@ -48,13 +43,8 @@ namespace TemperatureService3.Test
         [InlineData("/nonexisting")]
         public async Task Get_SensorsReturn404WhenNonExisting(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
+            var response = await DoGet(url);
 
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
-
-            // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
@@ -63,16 +53,17 @@ namespace TemperatureService3.Test
         [InlineData("/indoor.json")]
         public async Task Get_SensorReturn200AndCorrectContentType(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
+            var response = await DoGet(url);
 
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
-
-            // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
+        }
+
+        private async Task<HttpResponseMessage> DoGet(string url)
+        {
+            var client = _factory.CreateClient();
+            return await client.GetAsync(url).ConfigureAwait(false);
         }
 
         [Theory]
@@ -80,11 +71,7 @@ namespace TemperatureService3.Test
         [InlineData("/indoor.wns")]
         public async Task Get_SensorReturn200AndCorrectContentTypeAndCorrectWNSExpires(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
+            var response = await DoGet(url);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -109,11 +96,7 @@ namespace TemperatureService3.Test
         [InlineData("/soil.wns")]
         public async Task Get_SensorReturn200AndCorrectWNSFormat(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
+            var response = await DoGet(url);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -139,11 +122,7 @@ namespace TemperatureService3.Test
         [InlineData("/outdoor.html")]
         public async Task Get_SingleSensorHistoryLastWeek(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
+            var response = await DoGet(url);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -165,11 +144,7 @@ namespace TemperatureService3.Test
         [InlineData("/outdoor.html")]
         public async Task Get_SingleSensorHistoryLastMonth(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
+            var response = await DoGet(url);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -191,11 +166,7 @@ namespace TemperatureService3.Test
         [InlineData("/outdoor.html")]
         public async Task Get_SingleSensorHistoryLastYear2(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
+            var response = await DoGet(url);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -217,11 +188,7 @@ namespace TemperatureService3.Test
         [InlineData("/outdoor.html")]
         public async Task Get_SingleSensorHistoryLastYear(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
+            var response = await DoGet(url);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -240,11 +207,7 @@ namespace TemperatureService3.Test
         [InlineData("/outdoor.html")]
         public async Task Get_SingleSensorHistoryLast24(string url)
         {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync(url).ConfigureAwait(false);
+            var response = await DoGet(url);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -277,16 +240,11 @@ namespace TemperatureService3.Test
         [InlineData("indoor")]
         public async Task Put_SensorDataApiKeyInBody(string sensor)
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/{sensor}";
-
             var dto = new SensorDto { ApiKey = "testapi", Data = 9 };
             var content = JsonConvert.SerializeObject(dto);
 
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -300,18 +258,39 @@ namespace TemperatureService3.Test
                 response.Content.Headers.ContentType.ToString());
         }
 
+        private async Task<HttpResponseMessage> DoPut(string url, string content, string apiKeyHeaderContent = null)
+        {
+            var client = _factory.CreateClient();
+
+            if (apiKeyHeaderContent != null)
+            {
+                client.DefaultRequestHeaders.Add("X-APIKEY", apiKeyHeaderContent);
+            }
+
+            return await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+        }
+
+        private async Task<HttpResponseMessage> DoPost(string url, string content, string apiKeyHeaderContent = null)
+        {
+            var client = _factory.CreateClient();
+
+            if (apiKeyHeaderContent != null)
+            {
+                client.DefaultRequestHeaders.Add("X-APIKEY", apiKeyHeaderContent);
+            }
+
+            return await client.PostAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
+                .ConfigureAwait(false);
+        }
+
         [Fact]
         public async Task Put_SensorDataWrongModel()
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/outdoor";
-
             var content = "{aafgaaga";
 
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content);
 
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
@@ -319,16 +298,11 @@ namespace TemperatureService3.Test
         [Fact]
         public async Task Put_SensorDataWrongModelAuthorized()
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/outdoor";
-
             var content = "{aafgaaga";
-            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
+            var auth = "testapi";
 
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content, auth);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
@@ -341,15 +315,12 @@ namespace TemperatureService3.Test
             // Arrange
             var client = _factory.CreateClient();
             var url = $"/{sensor}";
+            var auth = "testapi";
 
             var dto = new SensorDto { Data = 9 };
             var content = JsonConvert.SerializeObject(dto);
 
-            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
-
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content, auth);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -368,11 +339,9 @@ namespace TemperatureService3.Test
         [InlineData("indoor")]
         public async Task Put_SensorInformationApiKeyInBody(string sensor)
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/{sensor}";
 
-            var response = await client.GetAsync($"/{sensor}.json").ConfigureAwait(false);
+            var response = await DoGet($"/{sensor}.json");
             var responseBody = await response.Content.ReadAsStringAsync();
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
@@ -384,9 +353,7 @@ namespace TemperatureService3.Test
             var dto = new SensorDto { Id = randomId, Description = randomDescription, ApiKey = "testapi" };
             var content = JsonConvert.SerializeObject(dto);
 
-            // Act
-            response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            response = await DoPut(url, content);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -397,7 +364,6 @@ namespace TemperatureService3.Test
             Assert.Equal(oldData, svm.Data);
             Assert.Equal(randomId, svm.Id);
             Assert.Equal(randomDescription, svm.Description);
-
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
         }
@@ -407,21 +373,16 @@ namespace TemperatureService3.Test
         [InlineData("indoor")]
         public async Task Put_SensorInformationApiKeyInHeaders(string sensor)
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/{sensor}";
 
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
+            var auth = "testapi";
 
             var dto = new SensorDto { Id = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
-            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
-
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content, auth);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -440,9 +401,8 @@ namespace TemperatureService3.Test
         [InlineData("newsensor")]
         public async Task Put_CreateNewSensorWithData(string sensor)
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/{sensor}";
+            var auth = "testapi";
 
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
@@ -451,11 +411,7 @@ namespace TemperatureService3.Test
             var dto = new SensorDto { Id = randomId, Description = randomDescription, Data = randomData };
             var content = JsonConvert.SerializeObject(dto);
 
-            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
-
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content, auth);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -476,7 +432,7 @@ namespace TemperatureService3.Test
         public async Task Put_CreateNewSensorWithoutData(string sensor)
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var auth = "testapi";
             var url = $"/{sensor}";
 
             string randomId = Utilities.RandomString(5);
@@ -485,11 +441,7 @@ namespace TemperatureService3.Test
             var dto = new SensorDto { Id = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
-            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
-
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content, auth);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -506,15 +458,14 @@ namespace TemperatureService3.Test
 
         [Theory]
         [InlineData("indoor")]
-        public async Task Put_UpdateSensorMetadata(string sensor)
+        public async Task Put_UpdateSomeSensorMetadata(string sensor)
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/{sensor}";
             var url2 = $"/{sensor}.json";
+            var auth = "testapi";
 
             // get old data
-            var response = await client.GetAsync(url2).ConfigureAwait(false);
+            var response = await DoGet(url2);
             var old = JsonConvert.DeserializeObject<SensorDto>(await response.Content.ReadAsStringAsync());
 
             // update data
@@ -524,10 +475,7 @@ namespace TemperatureService3.Test
             var dto = new SensorDto { Id = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
-            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
-
-            response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            response = await DoPut(url, content, auth);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -537,6 +485,7 @@ namespace TemperatureService3.Test
 
             Assert.Equal(randomId, svm.Id);
             Assert.Equal(randomDescription, svm.Description);
+            Assert.Equal(old.Type, svm.Type);
             Assert.NotEqual(svm.Description, old.Description);
             Assert.NotEqual(svm.Id, old.Id);
 
@@ -546,15 +495,14 @@ namespace TemperatureService3.Test
 
         [Theory]
         [InlineData("indoor")]
-        public async Task Post_UpdateSensorMetadata(string sensor)
+        public async Task Post_UpdateSomeSensorMetadata(string sensor)
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/{sensor}";
             var url2 = $"/{sensor}.json";
+            var auth = "testapi";
 
             // get old data
-            var response = await client.GetAsync(url2).ConfigureAwait(false);
+            var response = await DoGet(url2);
             var old = JsonConvert.DeserializeObject<SensorDto>(await response.Content.ReadAsStringAsync());
 
             // update data
@@ -564,10 +512,7 @@ namespace TemperatureService3.Test
             var dto = new SensorDto { Id = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
-            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
-
-            response = await client.PostAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            response = await DoPost(url, content, auth);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -577,6 +522,7 @@ namespace TemperatureService3.Test
 
             Assert.Equal(randomId, svm.Id);
             Assert.Equal(randomDescription, svm.Description);
+            Assert.Equal(old.Type, svm.Type);
             Assert.NotEqual(svm.Description, old.Description);
             Assert.NotEqual(svm.Id, old.Id);
 
@@ -588,18 +534,13 @@ namespace TemperatureService3.Test
         [InlineData("outdoor")]
         public async Task Put_UpdateSensorWithData127(string sensor)
         {
-            // Arrange
-            var client = _factory.CreateClient();
             var url = $"/{sensor}";
+            var auth = "testapi";
 
             var dto = new SensorDto { Data = -127 };
             var content = JsonConvert.SerializeObject(dto);
 
-            client.DefaultRequestHeaders.Add("X-APIKEY", "testapi");
-
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content, auth);
 
             var responseBody = await response.Content.ReadAsStringAsync();
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
@@ -613,18 +554,16 @@ namespace TemperatureService3.Test
         public async Task Put_SensorInformationWrongApiKeyInBody(string sensor)
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var auth = "wrongapikey";
             var url = $"/{sensor}";
 
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription, ApiKey = "wrongapikey" };
+            var dto = new SensorDto { Id = randomId, Description = randomDescription, ApiKey = auth };
             var content = JsonConvert.SerializeObject(dto);
 
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content);
 
             // Assert
             // Assert
@@ -637,7 +576,7 @@ namespace TemperatureService3.Test
         public async Task Put_SensorInformationWrongApiKeyInHeaders(string sensor)
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var auth = "wrongapikey";
             var url = $"/{sensor}";
 
             string randomId = Utilities.RandomString(5);
@@ -646,11 +585,7 @@ namespace TemperatureService3.Test
             var dto = new SensorDto { Id = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
-            client.DefaultRequestHeaders.Add("X-APIKEY", "wrongapikey");
-
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content, auth);
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -662,14 +597,12 @@ namespace TemperatureService3.Test
         public async Task Put_SensorDataLikeDevice(string sensor)
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var auth = "testapi";
             var url = $"/{sensor}";
 
-            var content = "{ \"name\": \"" + sensor + "\", \"data\": \"" + "9.0" + "\", \"apikey\": \"" + "testapi" + "\" }";
+            var content = "{ \"name\": \"" + sensor + "\", \"data\": \"" + "9.0" + "\", \"apikey\": \"" + auth + "\" }";
 
-            // Act
-            var response = await client.PutAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+            var response = await DoPut(url, content);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -690,19 +623,18 @@ namespace TemperatureService3.Test
         [Theory]
         [InlineData("outdoor")]
         [InlineData("indoor")]
-        public async Task Post_SensorDataLikeDevice(string sensor)
+        public async Task Post_SensorDataLikeDeviceAndCheckMetadata(string sensor)
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var auth = "testapi";
             var url = $"/{sensor}";
             var data = Utilities.RandomFloat().ToString("F2", CultureInfo.InvariantCulture);
 
-            var content = "{ \"name\": \"" + sensor + "\", \"data\": \"" + data + "\", \"apikey\": \"" + "testapi" + "\" }";
+            var content = "{ \"name\": \"" + sensor + "\", \"data\": \"" + data + "\", \"apikey\": \"" + auth + "\" }";
 
             var now = DateTime.UtcNow;
-            // Act
-            var response = await client.PostAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ConfigureAwait(false);
+
+            var response = await DoPost(url, content);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -715,7 +647,7 @@ namespace TemperatureService3.Test
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
 
-            response = await client.GetAsync($"/{sensor}.json").ConfigureAwait(false);
+            response = await DoGet($"/{sensor}.json");
             responseBody = await response.Content.ReadAsStringAsync();
             svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
@@ -723,7 +655,7 @@ namespace TemperatureService3.Test
 
             var timeDiff = svm.LastUpdated.ToUniversalTime() - now;
 
-            Assert.InRange(timeDiff.TotalMilliseconds, -1000, 1000);
+            Assert.InRange(timeDiff.TotalMilliseconds, -2000, 2000);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
             Assert.NotNull(svm.Description);
