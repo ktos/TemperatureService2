@@ -35,6 +35,7 @@ namespace TemperatureService3
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ISensorRepository, SensorRepository>();
+            services.AddTransient<IAppVersionService, AppVersionService>();
 
             services.AddMvc(options =>
             {
