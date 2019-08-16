@@ -657,7 +657,7 @@ namespace TemperatureService3.Test
 
             var timeDiff = svm.LastUpdated.ToUniversalTime() - now;
 
-            Assert.InRange(timeDiff.TotalMilliseconds, -2000, 2000);
+            Assert.InRange(timeDiff.TotalMilliseconds, -10000, 10000);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
             Assert.NotNull(svm.Description);
