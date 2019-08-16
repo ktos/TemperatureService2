@@ -458,6 +458,7 @@ namespace TemperatureService3.Test
 
         [Theory]
         [InlineData("indoor")]
+        [InlineData("soil")]
         public async Task Put_UpdateSomeSensorMetadata(string sensor)
         {
             var url = $"/{sensor}";
@@ -495,6 +496,7 @@ namespace TemperatureService3.Test
 
         [Theory]
         [InlineData("indoor")]
+        [InlineData("soil")]
         public async Task Post_UpdateSomeSensorMetadata(string sensor)
         {
             var url = $"/{sensor}";

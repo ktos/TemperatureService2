@@ -24,7 +24,7 @@ namespace TemperatureService3.Models
         /// <summary>
         /// The type of the sensor
         /// </summary>
-        public SensorType Type { get; set; }
+        public SensorType? Type { get; set; }
 
         /// <summary>
         /// Last data from this sensor
