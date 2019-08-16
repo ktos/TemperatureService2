@@ -11,7 +11,8 @@ WORKDIR "/src/TemperatureService3"
 RUN dotnet build "TemperatureService3.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "TemperatureService3.csproj" -c Release -o /app
+ARG INFOVER="Pre-Release"
+RUN dotnet publish "TemperatureService3.csproj" -c Release -o /app /p:InformationalVersion=$INFOVER
 
 FROM base AS final
 WORKDIR /app
