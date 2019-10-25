@@ -34,6 +34,10 @@ namespace TemperatureService3
             services.AddDbContext<SensorsDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddHealthChecks()
+                .AddMySql(Configuration.GetConnectionString("DefaultConnection"))
+                .AddDbContextCheck<SensorsDbContext>();
+
             services.AddScoped<ISensorRepository, SensorRepository>();
             services.AddTransient<IAppVersionService, AppVersionService>();
 
@@ -69,6 +73,7 @@ namespace TemperatureService3
 
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseHealthChecks("/health");
 
             app.UseMvc(routes =>
             {
