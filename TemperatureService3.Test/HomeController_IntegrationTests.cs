@@ -662,5 +662,14 @@ namespace TemperatureService3.Test
             Assert.NotNull(svm.Id);
             Assert.NotEqual(string.Empty, svm.Id);
         }
+
+        [Fact]
+        public async Task Get_HealthEndpointsReturn200AndJson()
+        {
+            var response = await DoGet("/health");
+
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+            Assert.Equal("application/json", response.Content.Headers.ContentType.ToString());
+        }
     }
 }

@@ -33,6 +33,8 @@ namespace TemperatureService3.Test
                     options.UseInternalServiceProvider(serviceProvider);
                 });
 
+                services.AddHealthChecks();
+
                 // Build the service provider.
                 var sp = services.BuildServiceProvider();
 
