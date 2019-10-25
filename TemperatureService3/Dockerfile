@@ -18,3 +18,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "TemperatureService3.dll"]
+
+HEALTHCHECK CMD curl --fail http://localhost/health || exit
