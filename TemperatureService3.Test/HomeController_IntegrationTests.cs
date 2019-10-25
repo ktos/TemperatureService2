@@ -544,9 +544,6 @@ namespace TemperatureService3.Test
 
             var response = await DoPut(url, content, auth);
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
-
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
