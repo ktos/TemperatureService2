@@ -67,10 +67,11 @@ namespace TemperatureService3
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
+            app.UseStatusCodePagesWithReExecute("/Home/ErrorCode", "?code={0}");
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseHealthChecks("/health");

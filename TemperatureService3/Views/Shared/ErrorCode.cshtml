@@ -1,0 +1,27 @@
+﻿@model ErrorCodeViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+@section Menu
+    {
+    <partial name="Menu" model="@new MenuViewModel { Active = null, Sensors = new List<SensorViewModel>() }" />
+}
+
+<h1 class="text-danger">Error @Model.ErrorCode.</h1>
+
+@switch (Model.ErrorCode)
+{
+    case 404:
+        <p class="text-danger">The desired page was not found.</p>
+        break;
+    case 401:
+        <p class="text-danger">You are unauthorized to access this page.</p>
+        break;
+    case 500:
+        <p class="text-danger">Internal server error.</p>
+        break;
+    default:
+        <p class="text-danger">Something went wrong.</p>
+        break;
+}

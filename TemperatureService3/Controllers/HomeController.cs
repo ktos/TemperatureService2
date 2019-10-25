@@ -87,5 +87,10 @@ namespace TemperatureService3.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult ErrorCode(int code)
+        {
+            return View(new ErrorCodeViewModel { ErrorCode = code });
+        }
     }
 }
