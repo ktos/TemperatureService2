@@ -285,7 +285,7 @@ namespace TemperatureService3.Test
         }
 
         [Fact]
-        public async Task Put_SensorDataWrongModel()
+        public async Task Put_SensorDataWrongModelWithoutAuth_ShouldBe401()
         {
             var url = $"/outdoor";
             var content = "{aafgaaga";
@@ -296,7 +296,7 @@ namespace TemperatureService3.Test
         }
 
         [Fact]
-        public async Task Put_SensorDataWrongModelAuthorized()
+        public async Task Put_SensorDataWrongModelAuthorized_ShouldBe400()
         {
             var url = $"/outdoor";
             var content = "{aafgaaga";
@@ -534,7 +534,7 @@ namespace TemperatureService3.Test
 
         [Theory]
         [InlineData("outdoor")]
-        public async Task Put_UpdateSensorWithData127(string sensor)
+        public async Task Put_UpdateSensorWithData127_ShouldBe400(string sensor)
         {
             var url = $"/{sensor}";
             var auth = "testapi";
@@ -550,7 +550,7 @@ namespace TemperatureService3.Test
         [Theory]
         [InlineData("outdoor")]
         [InlineData("indoor")]
-        public async Task Put_SensorInformationWrongApiKeyInBody(string sensor)
+        public async Task Put_SensorInformationWrongApiKeyInBody_ShouldBe401(string sensor)
         {
             // Arrange
             var auth = "wrongapikey";
@@ -572,7 +572,7 @@ namespace TemperatureService3.Test
         [Theory]
         [InlineData("outdoor")]
         [InlineData("indoor")]
-        public async Task Put_SensorInformationWrongApiKeyInHeaders(string sensor)
+        public async Task Put_SensorInformationWrongApiKeyInHeaders_ShouldBe401(string sensor)
         {
             // Arrange
             var auth = "wrongapikey";
