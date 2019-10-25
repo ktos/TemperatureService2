@@ -16,6 +16,10 @@ using TemperatureService3.Services;
 using Microsoft.Net.Http.Headers;
 using TemperatureService3.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Newtonsoft.Json;
+using System.Net.Mime;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace TemperatureService3
 {
@@ -74,7 +78,21 @@ namespace TemperatureService3
             app.UseStatusCodePagesWithReExecute("/Home/ErrorCode", "?code={0}");
             app.UseStaticFiles();
             app.UseAuthentication();
-            app.UseHealthChecks("/health");
+            app.UseHealthChecks("/health",
+               new HealthCheckOptions
+               {
+                   ResponseWriter = async (context, report) =>
+                   {
+                       var result = JsonConvert.SerializeObject(
+                           new
+                           {
+                               status = report.Status.ToString(),
+                               errors = report.Entries.Select(e => new { key = e.Key, value = Enum.GetName(typeof(HealthStatus), e.Value.Status) })
+                           });
+                       context.Response.ContentType = MediaTypeNames.Application.Json;
+                       await context.Response.WriteAsync(result);
+                   }
+               });
 
             app.UseMvc(routes =>
             {
