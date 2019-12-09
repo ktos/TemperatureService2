@@ -26,14 +26,14 @@ namespace TemperatureService3.Repository
 
         public IEnumerable<Sensor> GetAllSensorsWithValues()
         {
-            return _context.Sensors.Select(x => new Sensor
+            return _context.Sensors.ToList().Select(x => new Sensor
             {
                 Description = x.Description,
                 InternalId = x.InternalId,
                 Name = x.Name,
                 Type = x.Type,
                 IsHidden = x.IsHidden,
-                Values = x.Values.OrderByDescending(val => val.Timestamp).Take(50).ToList()
+                Values = _context.SensorValues.Where(v => v.Sensor.InternalId == x.InternalId).OrderByDescending(val => val.Timestamp).Take(50).ToList()
             }).ToList();
         }
 
@@ -55,6 +55,7 @@ namespace TemperatureService3.Repository
                 var grouped = _context.SensorValues
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
+                    .ToList()
                     .GroupBy(x => new { x.Timestamp.ToLocalTime().DayOfYear, x.Timestamp.ToLocalTime().Hour })
                     .ToList();
 
@@ -89,6 +90,7 @@ namespace TemperatureService3.Repository
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
                     .OrderBy(x => x.Timestamp)
+                    .ToList()
                     .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
                     .ToList();
 
@@ -118,6 +120,7 @@ namespace TemperatureService3.Repository
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
                     .OrderBy(x => x.Timestamp)
+                    .ToList()
                     .GroupBy(x => new { x.Timestamp.Month, x.Timestamp.Year })
                     .ToList();
 
