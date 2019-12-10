@@ -24,16 +24,18 @@ namespace TemperatureService3.Repository
             return _context.Sensors.ToList();
         }
 
-        public IEnumerable<Sensor> GetAllSensorsWithValues()
+        public IEnumerable<Sensor> GetAllSensorsWithLastValues()
         {
-            return _context.Sensors.ToList().Select(x => new Sensor
+            var lastSensorValues = _context.SensorValues.FromSqlRaw("SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` WHERE `Id` IN (SELECT MAX(`Id`) FROM `SensorValues` GROUP BY `SensorName`)").Include(s => s.Sensor).ToList();
+
+            return _context.Sensors.Where(x => !x.IsHidden).ToList().Select(x => new Sensor
             {
                 Description = x.Description,
                 InternalId = x.InternalId,
                 Name = x.Name,
                 Type = x.Type,
                 IsHidden = x.IsHidden,
-                Values = _context.SensorValues.AsQueryable().Where(v => v.Sensor == x).OrderByDescending(val => val.Timestamp).Take(50).ToList()
+                Values = lastSensorValues.Where(v => v.Sensor.Name == x.Name).ToList()
             }).ToList();
         }
 
