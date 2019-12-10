@@ -1,8 +1,8 @@
-FROM microsoft/dotnet:3.0-aspnetcore-runtime AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM microsoft/dotnet:3.0-sdk AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
 WORKDIR /src
 COPY ["TemperatureService3/TemperatureService3.csproj", "TemperatureService3/"]
 RUN dotnet restore "TemperatureService3/TemperatureService3.csproj"

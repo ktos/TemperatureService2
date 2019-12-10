@@ -61,7 +61,7 @@ namespace TemperatureService3.Repository
 
             var sensor = _context.Sensors.FirstOrDefault(x => x.Name == name);
 
-            sensor.Values = _context.SensorValues.FromSqlInterpolated($"SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` ORDER BY `Timestamp` DESC LIMIT 1").ToList();
+            sensor.Values = _context.SensorValues.FromSqlInterpolated($"SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` WHERE `SensorName` = {name} ORDER BY `Timestamp` DESC LIMIT 1").ToList();
 
             return sensor;
         }
