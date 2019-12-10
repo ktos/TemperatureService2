@@ -48,8 +48,12 @@ namespace TemperatureService3
             services.AddScoped<ISensorRepository, SensorRepository>();
             services.AddTransient<IAppVersionService, AppVersionService>();
 
-            services.AddControllersWithViews(options =>
+            services.AddControllers()
+                .AddNewtonsoftJson();
+
+            services.AddMvc(options =>
             {
+                options.ReturnHttpNotAcceptable = true;
                 options.FormatterMappings.SetMediaTypeMappingForFormat("wns", MediaTypeHeaderValue.Parse("application/xml"));
                 options.OutputFormatters.Add(new WnsOutputFormatter());
             });
