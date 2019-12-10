@@ -23,6 +23,7 @@ using Newtonsoft.Json;
 using System.Net.Mime;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
+using StackExchange.Profiling;
 
 namespace TemperatureService3
 {
@@ -40,6 +41,9 @@ namespace TemperatureService3
         {
             services.AddDbContext<SensorsDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddMiniProfiler()
+                .AddEntityFramework();
 
             services.AddHealthChecks()
                 .AddMySql(Configuration.GetConnectionString("DefaultConnection"))
@@ -84,6 +88,7 @@ namespace TemperatureService3
             app.UseStatusCodePagesWithReExecute("/Home/ErrorCode", "?code={0}");
             app.UseStaticFiles();
 
+            app.UseMiniProfiler();
             app.UseRouting();
 
             app.UseAuthentication();
