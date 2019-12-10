@@ -76,7 +76,7 @@ namespace TemperatureService3.Repository
                 var dt = DateTime.UtcNow.AddHours(-24);
                 var now = DateTime.UtcNow;
 
-                var grouped = _context.SensorValues
+                var grouped = _context.SensorValues.AsNoTracking()
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
                     .AsEnumerable()
@@ -103,60 +103,50 @@ namespace TemperatureService3.Repository
 
         public IEnumerable<GroupedByDateTime> GetSensorHistoryLastDays(string name, int days)
         {
-            IEnumerable<GroupedByDateTime> result;
+            IEnumerable<SensorValue> rawLastYearSensorValues = GetRawLastYearSensorValues(name);
 
-            string key = nameof(GetSensorHistoryLastDays) + name + days;
-            if (!_cache.TryGetValue(key, out result))
-            {
-                var dt = DateTime.UtcNow.AddDays(-days);
+            var dt = DateTime.UtcNow.AddDays(-days);
 
-                var grouped = _context.SensorValues
-                    .Where(x => x.Sensor.Name == name)
-                    .Where(x => x.Timestamp > dt)
-                    .OrderBy(x => x.Timestamp)
-                    .AsEnumerable()
-                    .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
-                    .ToList();
-
-                // workaround for https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/644
-                result = grouped.Select(x => new GroupedByDateTime
+            return rawLastYearSensorValues
+                .Where(x => x.Timestamp > dt)
+                .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
+                .Select(x => new GroupedByDateTime
                 {
                     Timestamp = new DateTime(x.Key.Year, x.Key.Month, x.Key.Day),
                     Value = x.Average(y => y.Data)
                 }).OrderBy(x => x.Timestamp).ToList();
+        }
 
-                _cache.Set(key, result, DateTimeOffset.Now.AddHours(2));
+        private IEnumerable<SensorValue> GetRawLastYearSensorValues(string name)
+        {
+            IEnumerable<SensorValue> rawLastYearSensorValues;
+
+            string key = nameof(GetRawLastYearSensorValues) + name;
+            if (!_cache.TryGetValue(key, out rawLastYearSensorValues))
+            {
+                var yearAgo = DateTime.UtcNow.AddDays(-365);
+
+                rawLastYearSensorValues = _context.SensorValues.AsNoTracking()
+                    .Where(x => x.Sensor.Name == name)
+                    .Where(x => x.Timestamp > yearAgo)
+                    .OrderBy(x => x.Timestamp)
+                    .ToList();
+
+                _cache.Set(key, rawLastYearSensorValues, DateTimeOffset.Now.AddHours(2));
             }
 
-            return result;
+            return rawLastYearSensorValues;
         }
 
         public IEnumerable<GroupedByDateTime> GetSensorHistoryLastYear(string name)
         {
-            IEnumerable<GroupedByDateTime> result;
-
-            string key = nameof(GetSensorHistoryLastYear) + name;
-            if (!_cache.TryGetValue(key, out result))
-            {
-                var dt = DateTime.UtcNow.AddDays(-365);
-
-                var grouped = _context.SensorValues
-                    .Where(x => x.Sensor.Name == name)
-                    .Where(x => x.Timestamp > dt)
-                    .OrderBy(x => x.Timestamp)
-                    .AsEnumerable()
+            return GetRawLastYearSensorValues(name)
                     .GroupBy(x => new { x.Timestamp.Month, x.Timestamp.Year })
-                    .ToList();
-
-                result = grouped.Select(x => new GroupedByDateTime
-                {
-                    Timestamp = new DateTime(x.Key.Year, x.Key.Month, 1),
-                    Value = x.Average(y => y.Data)
-                }).OrderBy(x => x.Timestamp).ToList();
-                _cache.Set(key, result, DateTimeOffset.Now.AddHours(2));
-            }
-
-            return result;
+                    .Select(x => new GroupedByDateTime
+                    {
+                        Timestamp = new DateTime(x.Key.Year, x.Key.Month, 1),
+                        Value = x.Average(y => y.Data)
+                    }).OrderBy(x => x.Timestamp).ToList();
         }
 
         public bool UpdateSensor(SensorDto sensorDto)
