@@ -7,7 +7,7 @@ namespace TemperatureService3.Repository
     {
         IEnumerable<Sensor> GetAllSensors();
 
-        IEnumerable<Sensor> GetAllSensorsWithValues();
+        IEnumerable<Sensor> GetAllSensorsWithLastValues();
 
         Sensor GetSensor(string name);
 

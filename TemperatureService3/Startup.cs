@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
 using TemperatureService3.Repository;
@@ -50,12 +52,15 @@ namespace TemperatureService3
             services.AddScoped<ISensorRepository, SensorRepository>();
             services.AddTransient<IAppVersionService, AppVersionService>();
 
+            services.AddControllers()
+                .AddNewtonsoftJson();
+
             services.AddMvc(options =>
             {
+                options.ReturnHttpNotAcceptable = true;
                 options.FormatterMappings.SetMediaTypeMappingForFormat("wns", MediaTypeHeaderValue.Parse("application/xml"));
                 options.OutputFormatters.Add(new WnsOutputFormatter());
-            })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            });
 
             services.AddAuthentication(options =>
             {
@@ -68,7 +73,7 @@ namespace TemperatureService3
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment() || env.IsStaging())
             {
@@ -84,36 +89,39 @@ namespace TemperatureService3
             app.UseStaticFiles();
 
             app.UseMiniProfiler();
+            app.UseRouting();
 
             app.UseAuthentication();
-            app.UseHealthChecks("/health");
+            app.UseAuthorization();
 
-            app.UseHealthChecks("/healthz", new HealthCheckOptions
+            app.UseEndpoints(endpoints =>
             {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "sensor-html",
-                    template: "{name}.html",
+                    pattern: "{name}.html",
                     defaults: new { controller = "Home", action = "Sensor" });
 
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "sensor-anotherformat",
-                    template: "{name}.{format}",
+                    pattern: "{name}.{format}",
                     defaults: new { controller = "Home", action = "SensorInAnotherFormat" });
 
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "sensor",
-                    template: "{name}",
+                    pattern: "{name}",
                     defaults: new { controller = "Home", action = "Sensor" });
 
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapHealthChecks("/health");
+
+                endpoints.MapHealthChecks("/healthz", new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
         }
     }

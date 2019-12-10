@@ -20,7 +20,7 @@ namespace TemperatureService3.Controllers
 
         public IActionResult Index()
         {
-            var sensors = _repository.GetAllSensorsWithValues();
+            var sensors = _repository.GetAllSensorsWithLastValues();
 
             ViewData["Title"] = "Dashboard";
             return View(new IndexViewModel(sensors));
@@ -36,7 +36,7 @@ namespace TemperatureService3.Controllers
 
                 var vm = new SensorPageViewModel
                 {
-                    AllSensors = new IndexViewModel(_repository.GetAllSensorsWithValues()).Sensors,
+                    AllSensors = new IndexViewModel(_repository.GetAllSensors()).Sensors,
                     Sensor = SensorViewModel.FromSensor(sensor),
                     Last24Hours = _repository.GetSensorHistoryLast24Hours(name),
                     LastWeek = _repository.GetSensorHistoryLastDays(name, 7),

@@ -35,7 +35,7 @@ namespace TemperatureService3.Test
             };
 
             sensorsRepoMock
-                .Setup(repo => repo.GetAllSensorsWithValues())
+                .Setup(repo => repo.GetAllSensorsWithLastValues())
                 .Returns(mockTempdataList);
 
             // Act
@@ -60,7 +60,7 @@ namespace TemperatureService3.Test
             };
 
             sensorsRepoMock
-                .Setup(repo => repo.GetAllSensorsWithValues())
+                .Setup(repo => repo.GetAllSensorsWithLastValues())
                 .Returns(mockTempdataList);
 
             // Act
@@ -104,7 +104,7 @@ namespace TemperatureService3.Test
             };
 
             sensorsRepoMock
-                .Setup(repo => repo.GetAllSensorsWithValues())
+                .Setup(repo => repo.GetAllSensorsWithLastValues())
                 .Returns(mockSensors);
 
             // Act

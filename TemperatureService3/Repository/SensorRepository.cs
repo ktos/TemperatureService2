@@ -24,22 +24,46 @@ namespace TemperatureService3.Repository
             return _context.Sensors.ToList();
         }
 
-        public IEnumerable<Sensor> GetAllSensorsWithValues()
+        public IEnumerable<Sensor> GetAllSensorsWithLastValues()
         {
-            return _context.Sensors.Select(x => new Sensor
+            if (_context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                return _context.Sensors.Where(x => !x.IsHidden).ToList().Select(x => new Sensor
+                {
+                    Description = x.Description,
+                    InternalId = x.InternalId,
+                    Name = x.Name,
+                    Type = x.Type,
+                    IsHidden = x.IsHidden,
+                    Values = _context.SensorValues.Where(v => v.Sensor.Name == x.Name).OrderByDescending(x => x.Timestamp).Take(1).ToList()
+                }).ToList();
+            }
+
+            var lastSensorValues = _context.SensorValues.FromSqlRaw("SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` WHERE `Id` IN (SELECT MAX(`Id`) FROM `SensorValues` GROUP BY `SensorName`)").Include(s => s.Sensor).AsNoTracking().ToList();
+
+            return _context.Sensors.Where(x => !x.IsHidden).ToList().Select(x => new Sensor
             {
                 Description = x.Description,
                 InternalId = x.InternalId,
                 Name = x.Name,
                 Type = x.Type,
                 IsHidden = x.IsHidden,
-                Values = x.Values.OrderByDescending(val => val.Timestamp).Take(50).ToList()
+                Values = lastSensorValues.Where(v => v.Sensor.Name == x.Name).ToList()
             }).ToList();
         }
 
         public Sensor GetSensor(string name)
         {
-            return _context.Sensors.Include(x => x.Values).FirstOrDefault(x => x.Name == name);
+            if (_context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                return _context.Sensors.Include(s => s.Values).FirstOrDefault(x => x.Name == name);
+            }
+
+            var sensor = _context.Sensors.FirstOrDefault(x => x.Name == name);
+
+            sensor.Values = _context.SensorValues.FromSqlInterpolated($"SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` WHERE `SensorName` = {name} ORDER BY `Timestamp` DESC LIMIT 1").ToList();
+
+            return sensor;
         }
 
         public IEnumerable<GroupedByDateTime> GetSensorHistoryLast24Hours(string name)
@@ -55,6 +79,7 @@ namespace TemperatureService3.Repository
                 var grouped = _context.SensorValues
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
+                    .AsEnumerable()
                     .GroupBy(x => new { x.Timestamp.ToLocalTime().DayOfYear, x.Timestamp.ToLocalTime().Hour })
                     .ToList();
 
@@ -89,6 +114,7 @@ namespace TemperatureService3.Repository
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
                     .OrderBy(x => x.Timestamp)
+                    .AsEnumerable()
                     .GroupBy(x => new { x.Timestamp.Day, x.Timestamp.Month, x.Timestamp.Year })
                     .ToList();
 
@@ -118,6 +144,7 @@ namespace TemperatureService3.Repository
                     .Where(x => x.Sensor.Name == name)
                     .Where(x => x.Timestamp > dt)
                     .OrderBy(x => x.Timestamp)
+                    .AsEnumerable()
                     .GroupBy(x => new { x.Timestamp.Month, x.Timestamp.Year })
                     .ToList();
 
