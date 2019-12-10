@@ -26,7 +26,20 @@ namespace TemperatureService3.Repository
 
         public IEnumerable<Sensor> GetAllSensorsWithLastValues()
         {
-            var lastSensorValues = _context.SensorValues.FromSqlRaw("SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` WHERE `Id` IN (SELECT MAX(`Id`) FROM `SensorValues` GROUP BY `SensorName`)").Include(s => s.Sensor).ToList();
+            if (_context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                return _context.Sensors.Where(x => !x.IsHidden).ToList().Select(x => new Sensor
+                {
+                    Description = x.Description,
+                    InternalId = x.InternalId,
+                    Name = x.Name,
+                    Type = x.Type,
+                    IsHidden = x.IsHidden,
+                    Values = _context.SensorValues.Where(v => v.Sensor.Name == x.Name).OrderByDescending(x => x.Timestamp).Take(1).ToList()
+                }).ToList();
+            }
+
+            var lastSensorValues = _context.SensorValues.FromSqlRaw("SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` WHERE `Id` IN (SELECT MAX(`Id`) FROM `SensorValues` GROUP BY `SensorName`)").Include(s => s.Sensor).AsNoTracking().ToList();
 
             return _context.Sensors.Where(x => !x.IsHidden).ToList().Select(x => new Sensor
             {
@@ -41,7 +54,16 @@ namespace TemperatureService3.Repository
 
         public Sensor GetSensor(string name)
         {
-            return _context.Sensors.Include(x => x.Values).FirstOrDefault(x => x.Name == name);
+            if (_context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                return _context.Sensors.Include(s => s.Values).FirstOrDefault(x => x.Name == name);
+            }
+
+            var sensor = _context.Sensors.FirstOrDefault(x => x.Name == name);
+
+            sensor.Values = _context.SensorValues.FromSqlInterpolated($"SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` ORDER BY `Timestamp` DESC LIMIT 1").ToList();
+
+            return sensor;
         }
 
         public IEnumerable<GroupedByDateTime> GetSensorHistoryLast24Hours(string name)
