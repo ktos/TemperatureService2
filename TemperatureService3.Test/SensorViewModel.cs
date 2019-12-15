@@ -67,7 +67,7 @@ namespace TemperatureService3.Test
             Assert.True(svm.Status);
             Assert.Equal("outdoor", svm.Name);
             Assert.Equal("zewnątrz", svm.Description);
-            Assert.Equal("1", svm.Id);
+            Assert.Equal("1", svm.InternalId);
             Assert.Equal(SensorType.Temperature, svm.Type);
             Assert.Equal(1, svm.Data);
             Assert.Equal(now, svm.LastUpdated);
@@ -96,7 +96,7 @@ namespace TemperatureService3.Test
             Assert.False(svm.Status);
             Assert.Equal("outdoor", svm.Name);
             Assert.Equal("zewnątrz", svm.Description);
-            Assert.Equal("1", svm.Id);
+            Assert.Equal("1", svm.InternalId);
             Assert.Equal(SensorType.Temperature, svm.Type);
             Assert.Equal(1, svm.Data);
             Assert.Equal(now - TimeSpan.FromMinutes(60), svm.LastUpdated.ToUniversalTime());

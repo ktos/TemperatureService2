@@ -161,7 +161,7 @@ namespace TemperatureService3.Test
             Assert.True(svm.Sensor.Status);
             Assert.Equal("outdoor", svm.Sensor.Name);
             Assert.Equal("zewn¹trz", svm.Sensor.Description);
-            Assert.Equal("1", svm.Sensor.Id);
+            Assert.Equal("1", svm.Sensor.InternalId);
             Assert.Equal(SensorType.Temperature, svm.Sensor.Type);
             Assert.Equal(1, svm.Sensor.Data);
             Assert.Equal(now, svm.Sensor.LastUpdated);

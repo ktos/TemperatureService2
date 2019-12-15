@@ -350,7 +350,7 @@ namespace TemperatureService3.Test
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription, ApiKey = "testapi" };
+            var dto = new SensorDto { InternalId = randomId, Description = randomDescription, ApiKey = "testapi" };
             var content = JsonConvert.SerializeObject(dto);
 
             response = await DoPut(url, content);
@@ -362,7 +362,7 @@ namespace TemperatureService3.Test
             svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
             Assert.Equal(oldData, svm.Data);
-            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomId, svm.InternalId);
             Assert.Equal(randomDescription, svm.Description);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
@@ -379,7 +379,7 @@ namespace TemperatureService3.Test
             string randomDescription = Utilities.RandomString(20);
             var auth = "testapi";
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription };
+            var dto = new SensorDto { InternalId = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
             var response = await DoPut(url, content, auth);
@@ -390,7 +390,7 @@ namespace TemperatureService3.Test
             var responseBody = await response.Content.ReadAsStringAsync();
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
-            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomId, svm.InternalId);
             Assert.Equal(randomDescription, svm.Description);
 
             Assert.Equal("application/json; charset=utf-8",
@@ -408,7 +408,7 @@ namespace TemperatureService3.Test
             string randomDescription = Utilities.RandomString(20);
             float randomData = Utilities.RandomFloat();
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription, Data = randomData };
+            var dto = new SensorDto { InternalId = randomId, Description = randomDescription, Data = randomData };
             var content = JsonConvert.SerializeObject(dto);
 
             var response = await DoPut(url, content, auth);
@@ -419,7 +419,7 @@ namespace TemperatureService3.Test
             var responseBody = await response.Content.ReadAsStringAsync();
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
-            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomId, svm.InternalId);
             Assert.Equal(randomDescription, svm.Description);
             Assert.Equal(randomData, svm.Data);
 
@@ -438,7 +438,7 @@ namespace TemperatureService3.Test
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription };
+            var dto = new SensorDto { InternalId = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
             var response = await DoPut(url, content, auth);
@@ -449,7 +449,7 @@ namespace TemperatureService3.Test
             var responseBody = await response.Content.ReadAsStringAsync();
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
-            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomId, svm.InternalId);
             Assert.Equal(randomDescription, svm.Description);
 
             Assert.Equal("application/json; charset=utf-8",
@@ -473,7 +473,7 @@ namespace TemperatureService3.Test
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription };
+            var dto = new SensorDto { InternalId = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
             response = await DoPut(url, content, auth);
@@ -484,11 +484,11 @@ namespace TemperatureService3.Test
             var responseBody = await response.Content.ReadAsStringAsync();
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
-            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomId, svm.InternalId);
             Assert.Equal(randomDescription, svm.Description);
             Assert.Equal(old.Type, svm.Type);
             Assert.NotEqual(svm.Description, old.Description);
-            Assert.NotEqual(svm.Id, old.Id);
+            Assert.NotEqual(svm.InternalId, old.InternalId);
 
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
@@ -511,7 +511,7 @@ namespace TemperatureService3.Test
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription };
+            var dto = new SensorDto { InternalId = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
             response = await DoPost(url, content, auth);
@@ -522,11 +522,11 @@ namespace TemperatureService3.Test
             var responseBody = await response.Content.ReadAsStringAsync();
             var svm = JsonConvert.DeserializeObject<SensorDto>(responseBody);
 
-            Assert.Equal(randomId, svm.Id);
+            Assert.Equal(randomId, svm.InternalId);
             Assert.Equal(randomDescription, svm.Description);
             Assert.Equal(old.Type, svm.Type);
             Assert.NotEqual(svm.Description, old.Description);
-            Assert.NotEqual(svm.Id, old.Id);
+            Assert.NotEqual(svm.InternalId, old.InternalId);
 
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
@@ -559,7 +559,7 @@ namespace TemperatureService3.Test
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription, ApiKey = auth };
+            var dto = new SensorDto { InternalId = randomId, Description = randomDescription, ApiKey = auth };
             var content = JsonConvert.SerializeObject(dto);
 
             var response = await DoPut(url, content);
@@ -581,7 +581,7 @@ namespace TemperatureService3.Test
             string randomId = Utilities.RandomString(5);
             string randomDescription = Utilities.RandomString(20);
 
-            var dto = new SensorDto { Id = randomId, Description = randomDescription };
+            var dto = new SensorDto { InternalId = randomId, Description = randomDescription };
             var content = JsonConvert.SerializeObject(dto);
 
             var response = await DoPut(url, content, auth);
@@ -612,8 +612,8 @@ namespace TemperatureService3.Test
             Assert.Equal(9.0f, svm.Data);
             Assert.NotNull(svm.Description);
             Assert.NotEqual(string.Empty, svm.Description);
-            Assert.NotNull(svm.Id);
-            Assert.NotEqual(string.Empty, svm.Id);
+            Assert.NotNull(svm.InternalId);
+            Assert.NotEqual(string.Empty, svm.InternalId);
 
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
@@ -659,8 +659,8 @@ namespace TemperatureService3.Test
                 response.Content.Headers.ContentType.ToString());
             Assert.NotNull(svm.Description);
             Assert.NotEqual(string.Empty, svm.Description);
-            Assert.NotNull(svm.Id);
-            Assert.NotEqual(string.Empty, svm.Id);
+            Assert.NotNull(svm.InternalId);
+            Assert.NotEqual(string.Empty, svm.InternalId);
         }
     }
 }

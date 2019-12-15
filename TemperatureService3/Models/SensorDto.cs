@@ -14,7 +14,7 @@ namespace TemperatureService3.Models
         /// Internal ID of the sensor, e.g. from a distributor
         /// or I2C identifier
         /// </summary>
-        public string Id { get; set; }
+        public string InternalId { get; set; }
 
         /// <summary>
         /// Sensor description (e.g. location)
