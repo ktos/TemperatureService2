@@ -40,7 +40,7 @@ namespace TemperatureService3.Repository
                 }).ToList();
             }
 
-            var lastSensorValues = _context.SensorValues.FromSqlRaw("SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` WHERE `Id` IN (SELECT MAX(`Id`) FROM `SensorValues` GROUP BY `SensorName`)").Include(s => s.Sensor).AsNoTracking().ToList();
+            var lastSensorValues = _context.SensorValues.FromSqlRaw("SELECT `SensorValues`.`Id`, `Data`, `Timestamp`, `SensorId` FROM `SensorValues` WHERE `SensorValues`.`Id` IN (SELECT MAX(`SensorValues`.`Id`) FROM `SensorValues` GROUP BY `SensorId`)").Include(s => s.Sensor).AsNoTracking().ToList();
 
             return _context.Sensors.Where(x => !x.IsHidden).ToList().Select(x => new Sensor
             {
@@ -62,7 +62,7 @@ namespace TemperatureService3.Repository
 
             var sensor = _context.Sensors.FirstOrDefault(x => x.Name == name);
 
-            sensor.Values = _context.SensorValues.FromSqlInterpolated($"SELECT `Id`, `Data`, `SensorName`, `Timestamp` FROM `SensorValues` WHERE `SensorName` = {name} ORDER BY `Timestamp` DESC LIMIT 10").ToList();
+            sensor.Values = _context.SensorValues.FromSqlInterpolated($"SELECT `Id`, `Data`, `SensorId`, `Timestamp` FROM `SensorValues` WHERE `SensorId` = {sensor.Id} ORDER BY `Timestamp` DESC LIMIT 10").ToList();
 
             return sensor;
         }
