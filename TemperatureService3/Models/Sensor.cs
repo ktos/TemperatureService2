@@ -1,18 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TemperatureService3.PublicDto;
 
 namespace TemperatureService3.Models
 {
-    /// <summary>
-    /// Possible supported types of sensors
-    /// </summary>
-    public enum SensorType
-    {
-        Temperature,
-        SoilHumidity
-    }
-
     /// <summary>
     /// The class representing single device/type object sending data
     /// to the system

@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TemperatureService3.PublicDto\TemperatureService3.PublicDto.csproj" />
     <ProjectReference Include="..\TemperatureService3\TemperatureService3.csproj" />
   </ItemGroup>
 

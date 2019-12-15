@@ -1,62 +1,12 @@
 ﻿using System;
 using System.Linq;
 using TemperatureService3.Models;
+using TemperatureService3.PublicDto;
 
 namespace TemperatureService3.ViewModels
 {
-    public enum Difference
+    public static class SensorViewModelFactory
     {
-        Unknown,
-        Steady,
-        Lowering,
-        Rising
-    }
-
-    public class SensorViewModel
-    {
-        /// <summary>
-        /// Publicly-visible sensor name, which will be used to
-        /// refer to id
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Internal ID of the sensor, e.g. from a distributor
-        /// or I2C identifier
-        /// </summary>
-        public string InternalId { get; set; }
-
-        /// <summary>
-        /// Sensor description (e.g. location)
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// The type of the sensor
-        /// </summary>
-        public SensorType Type { get; set; }
-
-        /// <summary>
-        /// Last data from this sensor
-        /// </summary>
-        public float Data { get; set; }
-
-        /// <summary>
-        /// The Time sensor was last updated
-        /// </summary>
-        public DateTime LastUpdated { get; set; }
-
-        /// <summary>
-        /// Is the sensor alive?
-        /// </summary>
-        public bool Status { get; set; }
-
-        /// <summary>
-        /// What is the difference between latest and previous data:
-        /// is it rising, lowering or staying in the same level
-        /// </summary>
-        public Difference DifferenceFromPrevious { get; set; }
-
         /// <summary>
         /// Creates a new SensorViewModel based on the existing Sensor
         /// </summary>
@@ -74,7 +24,7 @@ namespace TemperatureService3.ViewModels
                 Type = sensor.Type,
                 Data = float.NaN,
                 Status = false,
-                DifferenceFromPrevious = Difference.Unknown
+                Trend = Difference.Unknown
             };
 
             var orderedValues = sensor.Values?.OrderByDescending(x => x.Timestamp);
@@ -92,11 +42,11 @@ namespace TemperatureService3.ViewModels
                     {
                         var secondNewest = orderedValues.Skip(1).First();
                         if (newestValue.Data - secondNewest.Data > eps)
-                            result.DifferenceFromPrevious = Difference.Rising;
+                            result.Trend = Difference.Rising;
                         else if (newestValue.Data - secondNewest.Data < -eps)
-                            result.DifferenceFromPrevious = Difference.Lowering;
+                            result.Trend = Difference.Lowering;
                         else
-                            result.DifferenceFromPrevious = Difference.Steady;
+                            result.Trend = Difference.Steady;
                     }
                 }
             }

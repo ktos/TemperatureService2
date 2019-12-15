@@ -4,6 +4,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
 WORKDIR /src
+COPY ["TemperatureService3.PublicDto/TemperatureService3.PublicDto.csproj", "TemperatureService3.PublicDto/"]
 COPY ["TemperatureService3/TemperatureService3.csproj", "TemperatureService3/"]
 RUN dotnet restore "TemperatureService3/TemperatureService3.csproj"
 COPY . .

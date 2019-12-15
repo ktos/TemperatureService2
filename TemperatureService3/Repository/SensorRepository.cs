@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TemperatureService3.Data;
 using TemperatureService3.Models;
+using TemperatureService3.PublicDto;
 
 namespace TemperatureService3.Repository
 {

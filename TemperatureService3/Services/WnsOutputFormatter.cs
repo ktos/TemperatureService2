@@ -14,6 +14,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using TemperatureService3.PublicDto;
 using TemperatureService3.ViewModels;
 
 namespace TemperatureService3.Services

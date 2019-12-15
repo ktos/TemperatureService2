@@ -28,11 +28,11 @@
                 <span title="@Model.LastUpdated"><i class="far fa-clock"></i> @Model.LastUpdated.Humanize()</span>
                 <i class="fa @(Model.Status ? "fa-check-circle" : "fa-times-circle")" title="Status: @Model.Status"></i>
                 @{
-                    if (Model.DifferenceFromPrevious == Difference.Lowering)
+                    if (Model.Trend == Difference.Lowering)
                     {
                         <i class="fa fa-level-down-alt"></i>
                     }
-                    else if (Model.DifferenceFromPrevious == Difference.Rising)
+                    else if (Model.Trend == Difference.Rising)
                     {
                         <i class="fa fa-level-up-alt"></i>
                     }

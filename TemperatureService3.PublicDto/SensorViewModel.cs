@@ -1,9 +1,21 @@
 ﻿using System;
-using TemperatureService3.PublicDto;
+using System.Collections.Generic;
+using System.Text;
 
-namespace TemperatureService3.Models
+namespace TemperatureService3.PublicDto
 {
-    public class SensorDto
+    /// <summary>
+    /// Describes trend between current and previous values
+    /// </summary>
+    public enum Difference
+    {
+        Unknown,
+        Steady,
+        Lowering,
+        Rising
+    }
+
+    public class SensorViewModel
     {
         /// <summary>
         /// Publicly-visible sensor name, which will be used to
@@ -25,12 +37,12 @@ namespace TemperatureService3.Models
         /// <summary>
         /// The type of the sensor
         /// </summary>
-        public SensorType? Type { get; set; }
+        public SensorType Type { get; set; }
 
         /// <summary>
         /// Last data from this sensor
         /// </summary>
-        public float Data { get; set; } = float.NaN;
+        public float Data { get; set; }
 
         /// <summary>
         /// The Time sensor was last updated
@@ -43,8 +55,9 @@ namespace TemperatureService3.Models
         public bool Status { get; set; }
 
         /// <summary>
-        /// API key if not used in HTTP header
+        /// What is the difference between latest and previous data:
+        /// is it rising, lowering or staying in the same level
         /// </summary>
-        public string ApiKey { get; set; }
+        public Difference Trend { get; set; }
     }
 }

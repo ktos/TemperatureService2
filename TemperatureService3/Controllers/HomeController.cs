@@ -37,7 +37,7 @@ namespace TemperatureService3.Controllers
                 var vm = new SensorPageViewModel
                 {
                     AllSensors = new IndexViewModel(_repository.GetAllSensors()).Sensors,
-                    Sensor = SensorViewModel.FromSensor(sensor),
+                    Sensor = SensorViewModelFactory.FromSensor(sensor),
                     Last24Hours = _repository.GetSensorHistoryLast24Hours(name),
                     LastWeek = _repository.GetSensorHistoryLastDays(name, 7),
                     LastMonth = _repository.GetSensorHistoryLastDays(name, 30),
@@ -68,7 +68,7 @@ namespace TemperatureService3.Controllers
             if (!result)
                 return BadRequest();
 
-            var svm = SensorViewModel.FromSensor(_repository.GetSensor(name));
+            var svm = SensorViewModelFactory.FromSensor(_repository.GetSensor(name));
             return CreatedAtAction("Sensor", svm);
         }
 
@@ -78,7 +78,7 @@ namespace TemperatureService3.Controllers
             var sensor = _repository.GetSensor(name);
 
             if (sensor != null)
-                return Ok(SensorViewModel.FromSensor(sensor));
+                return Ok(SensorViewModelFactory.FromSensor(sensor));
             else
                 return NotFound();
         }

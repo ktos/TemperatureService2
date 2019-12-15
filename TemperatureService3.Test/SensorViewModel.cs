@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 using TemperatureService3.Models;
 using TemperatureService3.ViewModels;
+using TemperatureService3.PublicDto;
 
 namespace TemperatureService3.Test
 {
@@ -22,7 +23,7 @@ namespace TemperatureService3.Test
                 Values = null
             };
 
-            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
+            var svm = ViewModels.SensorViewModelFactory.FromSensor(sensor);
             Assert.False(svm.Status);
             Assert.Equal(float.NaN, svm.Data);
         }
@@ -39,7 +40,7 @@ namespace TemperatureService3.Test
                 Values = new List<SensorValue>()
             };
 
-            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
+            var svm = ViewModels.SensorViewModelFactory.FromSensor(sensor);
             Assert.False(svm.Status);
             Assert.Equal(float.NaN, svm.Data);
         }
@@ -63,7 +64,7 @@ namespace TemperatureService3.Test
                 }
             };
 
-            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
+            var svm = ViewModels.SensorViewModelFactory.FromSensor(sensor);
             Assert.True(svm.Status);
             Assert.Equal("outdoor", svm.Name);
             Assert.Equal("zewnątrz", svm.Description);
@@ -92,7 +93,7 @@ namespace TemperatureService3.Test
                 }
             };
 
-            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
+            var svm = ViewModels.SensorViewModelFactory.FromSensor(sensor);
             Assert.False(svm.Status);
             Assert.Equal("outdoor", svm.Name);
             Assert.Equal("zewnątrz", svm.Description);
@@ -121,8 +122,8 @@ namespace TemperatureService3.Test
                 }
             };
 
-            var svm = ViewModels.SensorViewModel.FromSensor(sensor);
-            Assert.Equal(Difference.Lowering, svm.DifferenceFromPrevious);
+            var svm = ViewModels.SensorViewModelFactory.FromSensor(sensor);
+            Assert.Equal(Difference.Lowering, svm.Trend);
 
             sensor = new Sensor
             {
@@ -137,8 +138,8 @@ namespace TemperatureService3.Test
                     new SensorValue {  Data = 1, Id = 3, Timestamp = now - TimeSpan.FromMinutes(90) }
                 }
             };
-            svm = ViewModels.SensorViewModel.FromSensor(sensor);
-            Assert.Equal(Difference.Rising, svm.DifferenceFromPrevious);
+            svm = ViewModels.SensorViewModelFactory.FromSensor(sensor);
+            Assert.Equal(Difference.Rising, svm.Trend);
 
             sensor = new Sensor
             {
@@ -153,8 +154,8 @@ namespace TemperatureService3.Test
                     new SensorValue {  Data = 1, Id = 3, Timestamp = now - TimeSpan.FromMinutes(90) }
                 }
             };
-            svm = ViewModels.SensorViewModel.FromSensor(sensor);
-            Assert.Equal(Difference.Steady, svm.DifferenceFromPrevious);
+            svm = ViewModels.SensorViewModelFactory.FromSensor(sensor);
+            Assert.Equal(Difference.Steady, svm.Trend);
 
             sensor = new Sensor
             {
@@ -169,8 +170,8 @@ namespace TemperatureService3.Test
                     new SensorValue {  Data = 1, Id = 3, Timestamp = now - TimeSpan.FromMinutes(90) }
                 }
             };
-            svm = ViewModels.SensorViewModel.FromSensor(sensor);
-            Assert.Equal(Difference.Steady, svm.DifferenceFromPrevious);
+            svm = ViewModels.SensorViewModelFactory.FromSensor(sensor);
+            Assert.Equal(Difference.Steady, svm.Trend);
         }
     }
 }
