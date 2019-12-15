@@ -20,10 +20,14 @@ namespace TemperatureService3.Models
     public class Sensor
     {
         /// <summary>
-        /// Publicly-visible sensor name, which will be used to
-        /// refer to id
+        /// Internal database sensor id
         /// </summary>
         [Key]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Publicly-visible sensor name
+        /// </summary>
         public string Name { get; set; }
 
         /// <summary>
