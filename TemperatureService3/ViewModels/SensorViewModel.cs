@@ -24,7 +24,7 @@ namespace TemperatureService3.ViewModels
         /// Internal ID of the sensor, e.g. from a distributor
         /// or I2C identifier
         /// </summary>
-        public string Id { get; set; }
+        public string InternalId { get; set; }
 
         /// <summary>
         /// Sensor description (e.g. location)
@@ -69,7 +69,7 @@ namespace TemperatureService3.ViewModels
             var result = new SensorViewModel
             {
                 Name = sensor.Name,
-                Id = sensor.InternalId,
+                InternalId = sensor.InternalId,
                 Description = sensor.Description,
                 Type = sensor.Type,
                 Data = float.NaN,

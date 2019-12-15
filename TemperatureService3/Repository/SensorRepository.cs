@@ -153,7 +153,7 @@ namespace TemperatureService3.Repository
         {
             var sensor = GetSensor(sensorDto.Name);
             if (sensorDto.Description != null && sensorDto.Description != sensor.Description) sensor.Description = sensorDto.Description;
-            if (sensorDto.Id != null && sensorDto.Id != sensor.InternalId) sensor.InternalId = sensorDto.Id;
+            if (sensorDto.InternalId != null && sensorDto.InternalId != sensor.InternalId) sensor.InternalId = sensorDto.InternalId;
             if (sensorDto.Type.HasValue && sensorDto.Type.Value != sensor.Type) sensor.Type = sensorDto.Type.Value;
             _context.SaveChanges();
 
@@ -170,7 +170,7 @@ namespace TemperatureService3.Repository
             var sensor = new Sensor
             {
                 Description = sensorDto.Description,
-                InternalId = sensorDto.Id,
+                InternalId = sensorDto.InternalId,
                 Name = sensorDto.Name,
                 Type = sensorDto.Type ?? SensorType.Temperature
             };
