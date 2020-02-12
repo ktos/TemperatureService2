@@ -14,11 +14,6 @@
     },
     {
       "provider": "cdnjs",
-      "library": "font-awesome@5.9.0",
-      "destination": "wwwroot/lib/fontawesome"
-    },
-    {
-      "provider": "cdnjs",
       "library": "Chart.js@2.7.3",
       "destination": "wwwroot/lib/chartjs"
     }
