@@ -5,11 +5,11 @@
         <h4 class="title"><a asp-action="Sensor" asp-controller="Home" asp-route-name="@Model.Name">@Model.Name</a></h4>
         @if (Model.Type == SensorType.Temperature)
         {
-            <p class="category"><i class="fa fa-thermometer-half"></i> @Model.Description</p>
+            <p class="category"><i class="ms-Icon ms-Icon--Frigid"></i> @Model.Description</p>
         }
         else
         {
-            <p class="category"><i class="fa fa-seedling"></i> @Model.Description</p>
+            <p class="category"><i class="ms-Icon ms-Icon--Flower"></i> @Model.Description</p>
         }
     </div>
     <div class="content">
@@ -25,12 +25,12 @@
         <div class="footer">
             <hr>
             <div class="stats">
-                <span title="@Model.LastUpdated"><i class="far fa-clock"></i> @Model.LastUpdated.Humanize()</span>
-                <i class="fa @(Model.Status ? "fa-check-circle" : "fa-times-circle")" title="Status: @Model.Status"></i>
+                <span title="@Model.LastUpdated"><i class="ms-Icon ms-Icon--Clock"></i> @Model.LastUpdated.Humanize()</span>
+                <i class="ms-Icon @(Model.Status ? "ms-Icon--SkypeCircleCheck" : "ms-Icon--StatusErrorFull")" title="Status: @Model.Status"></i>
                 @{
                     if (Model.Trend == Difference.Lowering)
                     {
-                        <i class="fa fa-level-down-alt"></i>
+                        <i class=""></i>
                     }
                     else if (Model.Trend == Difference.Rising)
                     {

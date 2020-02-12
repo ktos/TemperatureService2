@@ -2,7 +2,7 @@
 
 <li class="@(Model.Active == null ? "active" : "")">
     <a asp-action="Index" asp-controller="Home">
-        <i class="pe-7s-graph"></i>
+        <i class="ms-Icon ms-Icon--PieDouble"></i>
         <p>Dashboard</p>
     </a>
 </li>
@@ -10,7 +10,7 @@
 {
     <li class="@(Model.Active?.Name == item.Name ? "active" : "")">
         <a asp-action="Sensor" asp-controller="Home" asp-route-name="@item.Name">
-            <i class="pe-7s-angle-right-circle"></i>
+            <i class="ms-Icon ms-Icon--ChevronRightSmall"></i>
             <p>@item.Name</p>
         </a>
     </li>

@@ -7,9 +7,9 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/pe-icon-7-stroke.min.css",
+    "outputFileName": "wwwroot/css/fabric-icons.min.css",
     "inputFiles": [
-      "wwwroot/css/pe-icon-7-stroke.css"
+      "wwwroot/css/fabric-icons.css"
     ]
   },
   {
