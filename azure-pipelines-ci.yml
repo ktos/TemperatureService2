@@ -1,0 +1,79 @@
+pool:
+  vmImage: 'Ubuntu 18.04'
+
+pr:
+- master
+
+steps:
+- task: UseDotNet@2  
+  inputs:    
+    version: '5.x'
+    includePreviewVersions: true
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '$(Parameters.RestoreBuildProjects)'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(Parameters.RestoreBuildProjects)'
+    arguments: '--configuration $(BuildConfiguration) /p:Version=1.0 /p:InformationalVersion=$(Build.BuildNumber)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '**/*[Tt]est/*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --collect:"XPlat Code Coverage"'
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage from $(Agent.TempDirectory)/*/coverage.cobertura.xml'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(Agent.TempDirectory)/*/coverage.cobertura.xml'
+    pathToSources: TemperatureService3/
+
+- task: DotNetCoreCLI@2
+  displayName: Publish
+  inputs:
+    command: publish
+    publishWebProjects: True
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+    zipAfterPublish: True
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pack nuget package for PublicDto'
+  inputs:
+    command: pack
+    packagesToPack: 'TemperatureService3.PublicDto/*.csproj'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+
+- task: Docker@2
+  displayName: 'Build Docker Image'
+  inputs:
+    containerRegistry: DockerHub
+    repository: ktos/temperatureappservice
+    command: build
+    Dockerfile: TemperatureService3/Dockerfile
+    buildContext: .
+    tags: |
+     $(Build.BuildNumber)
+     latest
+    arguments: '--build-arg INFOVER=$(Build.BuildNumber)'
+
+- task: Docker@2
+  displayName: 'Push Docker to DockerHub'
+  inputs:
+    containerRegistry: DockerHub
+    repository: ktos/temperatureappservice
+    command: push
+    tags: |
+     $(Build.BuildNumber)
+     latest
