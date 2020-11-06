@@ -19,7 +19,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
-    projects: '$(Parameters.RestoreBuildProjects)'
+    projects: '**/*.csproj'
     arguments: '--configuration $(BuildConfiguration) /p:Version=1.0 /p:InformationalVersion=$(Build.BuildNumber)'
 
 - task: DotNetCoreCLI@2
