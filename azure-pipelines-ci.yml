@@ -54,26 +54,3 @@ steps:
   displayName: 'Publish Artifact'
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
-
-- task: Docker@2
-  displayName: 'Build Docker Image'
-  inputs:
-    containerRegistry: DockerHub
-    repository: ktos/temperatureappservice
-    command: build
-    Dockerfile: TemperatureService3/Dockerfile
-    buildContext: .
-    tags: |
-     $(Build.BuildNumber)
-     latest
-    arguments: '--build-arg INFOVER=$(Build.BuildNumber)'
-
-- task: Docker@2
-  displayName: 'Push Docker to DockerHub'
-  inputs:
-    containerRegistry: DockerHub
-    repository: ktos/temperatureappservice
-    command: push
-    tags: |
-     $(Build.BuildNumber)
-     latest
