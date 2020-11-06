@@ -16,6 +16,8 @@ ARG INFOVER="Pre-Release"
 RUN dotnet publish "TemperatureService3.csproj" -c Release -o /app /p:InformationalVersion=$INFOVER
 
 FROM base AS final
+RUN apt-get update && apt-get install -y --no-install-recommends curl
+
 WORKDIR /app
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "TemperatureService3.dll"]
