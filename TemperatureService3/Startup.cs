@@ -40,7 +40,7 @@ namespace TemperatureService3
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<SensorsDbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySql(ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection"))));
 
             services.AddMiniProfiler()
                 .AddEntityFramework();
