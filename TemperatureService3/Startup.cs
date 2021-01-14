@@ -1,29 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
-using TemperatureService3.Repository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TemperatureService3.Data;
-using TemperatureService3.Services;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
-using TemperatureService3.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Newtonsoft.Json;
-using System.Net.Mime;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using HealthChecks.UI.Client;
 using StackExchange.Profiling;
+using TemperatureService3.Authentication;
+using TemperatureService3.Data;
+using TemperatureService3.Repository;
+using TemperatureService3.Services;
 
 namespace TemperatureService3
 {
@@ -40,7 +28,7 @@ namespace TemperatureService3
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<SensorsDbContext>(options =>
-                options.UseMySql(ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection"))));
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection"))));
 
             services.AddMiniProfiler()
                 .AddEntityFramework();
