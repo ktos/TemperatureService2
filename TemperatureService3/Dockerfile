@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["TemperatureService3.PublicDto/TemperatureService3.PublicDto.csproj", "TemperatureService3.PublicDto/"]
 COPY ["TemperatureService3/TemperatureService3.csproj", "TemperatureService3/"]
